@@ -1,23 +1,28 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageSquare, X, Send, Bot, AlertCircle, Cpu, Globe, ArrowRight, Sparkles } from 'lucide-react';
+import { MessageSquare, X, Send, Bot, AlertCircle, Cpu, ArrowRight, Sparkles, Hash } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-// Fix: Import GoogleGenAI as per @google/genai guidelines
-import { GoogleGenAI } from "@google/genai";
+import { api } from '../services/api';
+
+interface ChatMessage {
+  role: 'user' | 'bot';
+  text: string;
+  keywords?: string[];
+}
 
 const ChatBot: React.FC = () => {
   const { language, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<{role: 'user' | 'bot', text: string}[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorStatus, setErrorStatus] = useState<'none' | 'config' | 'api' | 'network'>('none');
+  const [errorStatus, setErrorStatus] = useState<'none' | 'api' | 'network'>('none');
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const quickQuestions = [
-    { fr: "Comment faire un don ?", en: "How to donate?", sw: "Jinsi ya kutoa msaada?" },
-    { fr: "Quels sont vos projets ?", en: "What are your projects?", sw: "Miradi yenu ni gani?" },
-    { fr: "Où se trouve votre siège ?", en: "Where is your head office?", sw: "Ofisi yenu iko wapi?" }
+    { fr: "Quelle est votre mission ?", en: "What is your mission?", sw: "Dhamira yenu ni gani?" },
+    { fr: "Comment devenir bénévole ?", en: "How to volunteer?", sw: "Jinsi ya kujitolea?" },
+    { fr: "Quels sont vos objectifs ?", en: "What are your objectives?", sw: "Malengo yenu ni gani?" }
   ];
 
   useEffect(() => {
@@ -33,70 +38,35 @@ const ChatBot: React.FC = () => {
     const messageToSend = (customMessage || input).trim();
     if (!messageToSend || isLoading) return;
 
-    // Fix: Validate API key existence in process.env
-    const apiKey = process.env.API_KEY?.trim(); 
-
-    if (!apiKey || apiKey === "undefined" || apiKey === "") {
-      setErrorStatus('config');
-      setMessages(prev => [...prev, { role: 'user', text: messageToSend }]);
-      setMessages(prev => [...prev, { 
-        role: 'bot', 
-        text: "⚙️ ERREUR : La clé API Gemini n'est pas configurée." 
-      }]);
-      setInput('');
-      return;
-    }
-
     setInput('');
     setMessages(prev => [...prev, { role: 'user', text: messageToSend }]);
     setIsLoading(true);
     setErrorStatus('none');
 
     try {
-      // Fix: Initialize Gemini API client and call generateContent
-      const ai = new GoogleGenAI({ apiKey });
-      const langFull = language === 'FR' ? 'Français' : language === 'EN' ? 'English' : 'Kiswahili';
-      const systemInstruction = `Tu es l'assistant IA officiel de COMFORT Asbl (Goma, RDC). 
-      Réponds toujours en ${langFull}.
-      Ton ton : Professionnel, chaleureux, digne d'une grande fondation internationale.
-      Contexte : Nous intervenons en santé, éducation, et développement socio-économique en RDC.
-      Contact : contact@comfortasbl.org. Siège : Katindo, Goma.
-      Consigne : Sois concis et utile.`;
-
-      const response = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: messageToSend,
-        config: {
-          systemInstruction: systemInstruction,
-          temperature: 0.7,
-          topP: 0.9,
-        },
-      });
-
-      // Fix: Access response text using the .text property as defined in guidelines
-      const botText = response.text || "Je suis à votre écoute. Comment COMFORT peut-il vous aider aujourd'hui ?";
-
-      setMessages(prev => [...prev, { 
-        role: 'bot', 
-        text: botText 
-      }]);
+      // Appel à l'API PHP interne
+      const result = await api.askChatbot(messageToSend);
       
-    } catch (error: any) {
-      console.error("ChatBot API Error:", error);
-      
-      if (error.message.includes('fetch') || error.message.includes('NetworkError')) {
-        setErrorStatus('network');
+      if (result && result.reponse) {
         setMessages(prev => [...prev, { 
           role: 'bot', 
-          text: "🌐 Impossible de contacter le serveur IA. Vérifiez votre connexion." 
+          text: result.reponse,
+          keywords: result.mots_cles || []
         }]);
       } else {
-        setErrorStatus('api');
         setMessages(prev => [...prev, { 
           role: 'bot', 
-          text: `⚠️ Erreur technique : ${error.message}.` 
+          text: "Désolé, je ne parviens pas à analyser votre demande par rapport à nos statuts. Pouvez-vous être plus précis ?" 
         }]);
       }
+      
+    } catch (error: any) {
+      console.error("ChatBot Internal API Error:", error);
+      setErrorStatus('network');
+      setMessages(prev => [...prev, { 
+        role: 'bot', 
+        text: "🌐 Erreur de connexion au serveur interne de COMFORT Asbl." 
+      }]);
     } finally {
       setIsLoading(false);
     }
@@ -140,9 +110,9 @@ const ChatBot: React.FC = () => {
                   <Sparkles size={32} className="text-comfort-blue opacity-20" />
                 </div>
                 <div className="space-y-2">
-                  <h4 className="text-comfort-blue font-serif font-bold text-lg">Bienvenue chez COMFORT</h4>
+                  <h4 className="text-comfort-blue font-serif font-bold text-lg">Informations Statutaires</h4>
                   <p className="text-gray-400 text-xs px-8 leading-relaxed">
-                    Je suis là pour vous informer sur nos missions humanitaires en RDC.
+                    Je suis l'assistant interne formé sur les statuts officiels de COMFORT Asbl.
                   </p>
                 </div>
                 
@@ -163,16 +133,23 @@ const ChatBot: React.FC = () => {
             )}
             
             {messages.map((msg, i) => (
-              <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
+              <div key={i} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
                 <div className={`max-w-[85%] px-5 py-3.5 rounded-2xl text-[12px] shadow-sm leading-relaxed ${
                   msg.role === 'user' 
                     ? 'bg-comfort-blue text-white rounded-tr-none' 
-                    : errorStatus !== 'none' 
-                      ? 'bg-red-50 text-red-600 border border-red-100 rounded-tl-none'
-                      : 'bg-white text-gray-700 border border-gray-100 rounded-tl-none'
+                    : 'bg-white text-gray-700 border border-gray-100 rounded-tl-none'
                 }`}>
                   {msg.text}
                 </div>
+                {msg.role === 'bot' && msg.keywords && msg.keywords.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-2 px-1">
+                    {msg.keywords.map((kw, kid) => (
+                      <span key={kid} className="text-[8px] bg-gray-100 text-gray-400 px-2 py-0.5 rounded-full flex items-center">
+                        <Hash size={8} className="mr-1" /> {kw}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
             
@@ -191,7 +168,7 @@ const ChatBot: React.FC = () => {
           {errorStatus !== 'none' && (
             <div className="px-6 py-2 bg-amber-50 text-[9px] text-amber-700 flex items-center border-t border-amber-100 font-bold uppercase tracking-tighter">
               <AlertCircle size={12} className="mr-2" /> 
-              {errorStatus === 'config' ? "Clé API non configurée" : "Erreur de connexion"}
+              Erreur de connexion au serveur institutionnel
             </div>
           )}
           
@@ -219,7 +196,7 @@ const ChatBot: React.FC = () => {
           
           <div className="bg-gray-50 py-3 text-center border-t border-gray-100">
              <span className="text-[8px] text-gray-400 font-bold uppercase tracking-[0.2em] flex items-center justify-center">
-               <Cpu size={10} className="mr-2" /> IA COMFORT • Gemini 3
+               <Cpu size={10} className="mr-2" /> Analyseur de Statuts • COMFORT Asbl
              </span>
           </div>
         </div>

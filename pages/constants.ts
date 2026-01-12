@@ -1,4 +1,4 @@
-import { Project, BlogPost, Domain, Testimonial, Partner, TeamMember } from './types';
+import { Project, BlogPost, Domain, Testimonial, Partner, TeamMember } from '../types';
 
 export const CONTACT_INFO = {
   phone: "+243 994 280 037",
@@ -100,24 +100,36 @@ export const BLOG_POSTS: BlogPost[] = [
 export const TESTIMONIALS: Testimonial[] = [
   {
     id: '1',
-    name: "John K. Biloto",
+    nom_complet: "John K. Biloto",
+    email: "john@example.com",
+    telephone: "+243 000 000 000",
     role: "Partenaire institutionnel",
-    content: "Collaborer avec COMFORT Asbl a transformé notre manière d’intervenir sur le terrain. Leur approche centrée sur la dignité humaine et l’impact durable nous a permis de soutenir des communautés qui étaient jusque-là difficiles d’accès.",
-    image: "https://api.comfortasbl.org/assets/images/temoins/t1.jpg"
+    organisation: "Institution X",
+    message: "Collaborer avec COMFORT Asbl a transformé notre manière d’intervenir sur le terrain. Leur approche centrée sur la dignité humaine et l’impact durable nous a permis de soutenir des communautés qui étaient jusque-là difficiles d’accès.",
+    status: "publié",
+    created_at: "2023-09-15"
   },
   {
     id: '2',
-    name: "Charle Landa",
+    nom_complet: "Charle Landa",
+    email: "charle@example.com",
+    telephone: "+243 111 111 111",
     role: "Internaute / Observateur engagé",
-    content: "J’ai découvert COMFORT Asbl à travers leurs actions publiées en ligne, et j’ai été profondément marqué par leur engagement réel.",
-    image: "https://api.comfortasbl.org/assets/images/temoins/t2.jpg"
+    organisation: null,
+    message: "J’ai découvert COMFORT Asbl à travers leurs actions publiées en ligne, et j’ai été profondément marqué par leur engagement réel.",
+    status: "publié",
+    created_at: "2023-10-10"
   },
   {
     id: '3',
-    name: "Gabriel Muruwa",
+    nom_complet: "Gabriel Muruwa",
+    email: "gabriel@example.com",
+    telephone: "+243 222 222 222",
     role: "Coordinateur COMFORT Asbl",
-    content: "À COMFORT Asbl, notre priorité est de servir les populations les plus vulnérables avec intégrité et responsabilité.",
-    image: "https://api.comfortasbl.org/assets/images/temoins/t3.jpg"
+    organisation: "COMFORT Asbl",
+    message: "À COMFORT Asbl, notre priorité est de servir les populations les plus vulnérables avec intégrité et responsabilité.",
+    status: "publié",
+    created_at: "2023-11-05"
   }
 ];
 

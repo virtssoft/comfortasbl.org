@@ -95,18 +95,6 @@ const Blog: React.FC = () => {
             )}
         </div>
       </section>
-
-      {/* CTA - Institutional Minimal */}
-      <section className="py-32 bg-comfort-light border-t border-gray-100">
-        <div className="container mx-auto px-6 text-center max-w-3xl">
-            <h2 className="text-4xl font-serif font-bold text-comfort-blue mb-8">Restez connecté à nos <span className="italic">actions</span>.</h2>
-            <p className="text-gray-500 font-light mb-12">Recevez chaque mois un résumé de nos interventions et des récits de vie transformés directement par email.</p>
-            <div className="flex flex-col md:flex-row gap-4 justify-center">
-                <input type="email" placeholder="Votre adresse email institutionnelle" className="px-8 py-5 bg-white border border-gray-200 flex-1 outline-none focus:border-comfort-gold transition-colors font-light" />
-                <button className="bg-comfort-blue text-white px-12 py-5 font-bold uppercase tracking-widest hover:bg-comfort-gold transition-all duration-500 shadow-xl">S'abonner</button>
-            </div>
-        </div>
-      </section>
     </div>
   );
 };

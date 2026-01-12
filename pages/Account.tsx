@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
-import { User, LogOut, Check, AlertTriangle, Shield, Key, History } from 'lucide-react';
+import { User, LogOut, Check, AlertTriangle, Shield, Key, History, LayoutDashboard } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 
@@ -12,8 +12,7 @@ const Account: React.FC = () => {
   const { user, login, logout, isAuthenticated } = useAuth();
 
   const [view, setView] = useState<'login' | 'register'>('login');
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
+  const [loginInput, setLoginInput] = useState(''); // Peut être email ou username
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -22,10 +21,26 @@ const Account: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
-    const res = await api.login(email, password);
-    if (res.success) login(res.user);
-    else setError(res.error || "Identifiants non reconnus.");
-    setLoading(false);
+
+    try {
+      // Appel à l'endpoint PHP https://api.comfortasbl.org/login.php
+      const res = await api.login(loginInput, password);
+      
+      if (res.user) {
+        login(res.user); // Stockage dans le contexte Auth
+        
+        // REDIRECTION INSTANTANÉE SI SUPERADMIN
+        if (res.user.role === 'superadmin') {
+          navigate('/admin');
+        }
+      } else {
+        setError(res.error || "Identifiants non reconnus par le système institutionnel.");
+      }
+    } catch (err) {
+      setError("Erreur de communication avec le serveur d'authentification.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (isAuthenticated && user) {
@@ -40,13 +55,20 @@ const Account: React.FC = () => {
                               <div className="absolute top-4 right-4 bg-comfort-gold text-white text-[10px] px-3 py-1 font-bold uppercase tracking-widest">{user.role}</div>
                           </div>
                           <h1 className="text-3xl font-serif font-bold text-comfort-blue mb-2">{user.username}</h1>
-                          <p className="text-gray-400 font-light mb-10">{user.email}</p>
+                          <p className="text-gray-400 font-light mb-6">{user.email}</p>
+                          
+                          {user.role === 'superadmin' && (
+                             <button onClick={() => navigate('/admin')} className="w-full flex items-center justify-center px-6 py-4 bg-comfort-blue text-white text-[10px] font-bold uppercase tracking-widest hover:bg-comfort-gold transition-all mb-4 shadow-lg">
+                                <LayoutDashboard size={14} className="mr-3" /> Accéder au Dashboard Admin
+                             </button>
+                          )}
+
                           <button onClick={() => logout()} className="flex items-center text-xs font-bold text-red-400 uppercase tracking-[0.2em] hover:text-red-600 transition-colors">
                               <LogOut size={14} className="mr-3" /> Terminer la session
                           </button>
                       </div>
 
-                      {/* DASHBOARD - Structured */}
+                      {/* DASHBOARD MEMBRE - Structured */}
                       <div className="flex-1 space-y-20">
                           <div>
                               <h2 className="text-xl font-serif font-bold text-comfort-blue mb-8 border-b border-gray-100 pb-4 flex items-center">
@@ -68,7 +90,7 @@ const Account: React.FC = () => {
                                   <div className="p-8 border border-gray-100 hover:shadow-xl transition-shadow">
                                       <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Authentification</p>
                                       <p className="text-sm text-gray-600 font-light mb-6">Mise à jour régulière conseillée (tous les 90 jours).</p>
-                                      <button className="text-comfort-blue font-bold text-xs uppercase tracking-widest flex items-center"><Key size={14} className="mr-2"/> Modifier le pass</button>
+                                      <button className="text-comfort-blue font-bold text-xs uppercase tracking-widest flex items-center"><Key size={14} className="mr-2"/> Modifier le mot de passe</button>
                                   </div>
                               </div>
                           </div>
@@ -92,9 +114,9 @@ const Account: React.FC = () => {
           
           <form className="space-y-8" onSubmit={handleLogin}>
                 <div className="relative">
-                    <input type="text" required value={email} onChange={(e) => setEmail(e.target.value)}
+                    <input type="text" required value={loginInput} onChange={(e) => setLoginInput(e.target.value)}
                         className="w-full bg-transparent border-b border-gray-200 py-4 outline-none focus:border-comfort-gold transition-colors font-light text-sm" 
-                        placeholder="Identifiant ou Email"
+                        placeholder="Email ou Nom d'utilisateur"
                     />
                 </div>
                 <div className="relative">

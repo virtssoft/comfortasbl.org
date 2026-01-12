@@ -1,8 +1,9 @@
+
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
-import { DOMAINS, TEAM_MEMBERS, CONTACT_INFO } from './constants';
-import { Heart, BookOpen, HandCoins, Wheat, Palette, Shield, Activity, TrendingUp, Users, MapPin, Mail, Phone, ArrowRight, UserPlus, CheckCircle, Info } from 'lucide-react';
+import { TEAM_MEMBERS, CONTACT_INFO } from './constants';
+import { Heart, Shield, TrendingUp, Users, MapPin, Mail, Phone, ArrowRight, UserPlus, CheckCircle, Info } from 'lucide-react';
 import { api } from '../services/api';
 
 const About: React.FC = () => {

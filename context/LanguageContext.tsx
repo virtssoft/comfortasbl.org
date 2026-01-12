@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { translations } from '../translations';
 
@@ -16,28 +17,30 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   const t = (path: string): string => {
     const keys = path.split('.');
-    let current: any = translations[language];
     
-    if (!current) return path;
-
-    for (const key of keys) {
-      if (!current || current[key] === undefined) {
-        console.warn(`Translation missing for key: ${path} in language: ${language}`);
-        // Fallback to FR if current language is missing key
-        if (language !== 'FR') {
-          let frCurrent: any = translations['FR'];
-          for (const frKey of keys) {
-            if (!frCurrent || frCurrent[frKey] === undefined) return path;
-            frCurrent = frCurrent[frKey];
-          }
-          return frCurrent;
-        }
-        return path;
+    // Helper to get nested value
+    const getValue = (lang: Language, keys: string[]) => {
+      let current: any = translations[lang];
+      for (const key of keys) {
+        if (current === undefined || current[key] === undefined) return undefined;
+        current = current[key];
       }
-      current = current[key];
+      return current;
+    };
+
+    // Try current language
+    const result = getValue(language, keys);
+    if (result !== undefined) return result;
+
+    // Fallback to FR if not FR
+    if (language !== 'FR') {
+      const fallback = getValue('FR', keys);
+      if (fallback !== undefined) return fallback;
     }
-    
-    return current;
+
+    // Return the path itself if all fails
+    console.warn(`Translation missing for key: ${path} in language: ${language}`);
+    return path;
   };
 
   return (

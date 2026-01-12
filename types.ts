@@ -49,10 +49,14 @@ export interface Domain {
 
 export interface Testimonial {
   id: string;
-  name: string;
+  nom_complet: string;
+  email: string;
+  telephone: string;
   role: string;
-  content: string;
-  image: string;
+  organisation?: string | null;
+  message: string;
+  status: string;
+  created_at: string;
 }
 
 export interface Partner {

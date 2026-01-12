@@ -1,13 +1,7 @@
-
 import { Project, BlogPost, Partner, TeamMember, Testimonial, SiteSettings, Bulletin, SiteStats } from '../types';
 
 export const API_BASE_URL = 'https://api.comfortasbl.org'; 
 
-// Added missing types (ApiUser, ApiAction, ApiArticle, ApiDonation, ApiPartner) to support AdminDashboard and AuthContext
-
-/**
- * Interface definition for Users returned by the API
- */
 export interface ApiUser {
   id: string;
   username: string;
@@ -16,57 +10,45 @@ export interface ApiUser {
   password?: string;
 }
 
-/**
- * Interface definition for Actions (Projects) returned by the API
- */
 export interface ApiAction {
   id: string;
   titre: string;
   description: string;
   categorie: string;
-  statut: string;
+  statut: 'en_cours' | 'termine';
   image_url: string;
   date_debut: string;
   date_fin?: string;
 }
 
-/**
- * Interface definition for Articles (Blog posts) returned by the API
- */
 export interface ApiArticle {
   id: string;
-  titre: string;
-  contenu: string;
-  auteur: string;
-  categorie: string;
-  image_url: string;
-  status: string;
+  title: string;
+  content: string;
+  author?: string;
+  categorie?: string;
+  image_url?: string;
+  status?: string;
   created_at?: string;
-  views?: number;
+  views: number;
 }
 
-/**
- * Interface definition for Donations returned by the API
- */
 export interface ApiDonation {
   id: string;
-  donateur_nom: string;
-  email: string;
   montant: string;
-  methode: string;
+  donateur_nom: string;
+  email?: string;
+  methode?: string;
   message?: string;
-  status: string;
+  status: 'en_attente' | 'confirmé' | 'annulé';
   created_at?: string;
 }
 
-/**
- * Interface definition for Partners returned by the API
- */
 export interface ApiPartner {
   id: string;
   nom: string;
   description: string;
-  site_web: string;
+  site_web?: string;
   logo_url: string;
   type: string;
 }
@@ -78,9 +60,6 @@ const getAbsoluteUrl = (path: string | undefined): string => {
   return `${API_BASE_URL}/${cleanPath}`;
 };
 
-/**
- * Generic fetch helper for GET requests
- */
 async function fetchData<T>(endpoint: string): Promise<T | null> {
   try {
     const response = await fetch(`${API_BASE_URL}/${endpoint}`);
@@ -91,9 +70,6 @@ async function fetchData<T>(endpoint: string): Promise<T | null> {
   }
 }
 
-/**
- * Generic fetch helper for POST, PUT, DELETE requests
- */
 async function sendData(endpoint: string, method: 'POST' | 'PUT' | 'DELETE', data?: any) {
     const options: RequestInit = {
         method: method,
@@ -114,18 +90,18 @@ async function sendData(endpoint: string, method: 'POST' | 'PUT' | 'DELETE', dat
     }
 }
 
-/**
- * API Service object providing access to backend endpoints
- */
 export const api = {
   // Authentication
   login: (loginInput: string, passwordInput: string) => 
     sendData('login.php', 'POST', { login: loginInput, password: passwordInput }),
 
+  // Chatbot interne PHP
+  askChatbot: (question: string) => sendData('chatbot.php', 'POST', { question }),
+
   // Forms and Submissions
   joinAssociation: (data: any) => sendData('adhesions.php', 'POST', data),
   
-  // Volunteer dossier submission (Impact20)
+  // Volunteer dossier submission (POST /benevoles.php)
   joinVolunteer: async (formData: FormData) => {
     try {
         const response = await fetch(`${API_BASE_URL}/benevoles.php`, {
@@ -177,14 +153,29 @@ export const api = {
     if (!articles || !Array.isArray(articles)) return [];
     return articles.map(a => ({
       id: String(a.id),
-      title: a.titre,
-      excerpt: a.contenu ? a.contenu.substring(0, 150) + '...' : '',
-      author: a.auteur || 'Admin',
+      title: a.title || a.titre,
+      excerpt: a.content ? a.content.substring(0, 150) + '...' : (a.contenu ? a.contenu.substring(0, 150) + '...' : ''),
+      author: a.author || a.auteur || 'Admin',
       date: a.created_at?.split(' ')[0] || '',
       category: a.categorie || 'Actualité',
       image: getAbsoluteUrl(a.image_url),
       views: a.views || 0
     }));
+  },
+
+  getBlogPostsById: async (id: string): Promise<BlogPost | null> => {
+    const a = await fetchData<any>(`articles.php?id=${id}`);
+    if (!a) return null;
+    return {
+      id: String(a.id),
+      title: a.title || a.titre,
+      excerpt: a.content || a.contenu || '',
+      author: a.author || a.auteur || 'Admin',
+      date: a.created_at?.split(' ')[0] || '',
+      category: a.categorie || 'Actualité',
+      image: getAbsoluteUrl(a.image_url),
+      views: a.views || 0
+    };
   },
 
   getBulletins: async (): Promise<Bulletin[]> => {
@@ -229,7 +220,7 @@ export const api = {
   updateAction: (id: string, data: any) => sendData(`actions.php?id=${id}`, 'PUT', data),
   createAction: (data: any) => sendData('actions.php', 'POST', data),
   
-  // Added methods for articles/blog management
+  // Added methods for articles/blog management (Udpated for views support)
   deleteArticle: (id: string) => sendData(`articles.php?id=${id}`, 'DELETE'),
   updateArticle: (id: string, data: any) => sendData(`articles.php?id=${id}`, 'PUT', data),
   createArticle: (data: any) => sendData('articles.php', 'POST', data),
@@ -239,13 +230,21 @@ export const api = {
   updatePartner: (id: string, data: any) => sendData(`partners.php?id=${id}`, 'PUT', data),
   createPartner: (data: any) => sendData('partners.php', 'POST', data),
 
-  // Raw data access for Admin Dashboard
-  getRawActions: () => fetchData<any[]>('actions.php').then(d => d || []),
-  getRawArticles: () => fetchData<any[]>('articles.php').then(d => d || []),
-  getRawPartners: () => fetchData<any[]>('partners.php').then(d => d || []),
+  // Bulletins & Testimonials
+  deleteBulletin: (id: string) => sendData(`bulletins.php?id=${id}`, 'DELETE'),
+  updateBulletin: (id: string, data: any) => sendData(`bulletins.php?id=${id}`, 'PUT', data),
+  createBulletin: (data: any) => sendData('bulletins.php', 'POST', data),
+
+  getTestimonials: () => fetchData<Testimonial[]>('testimonials.php').then(d => d || []),
+  deleteTestimonial: (id: string) => sendData(`testimonials.php?id=${id}`, 'DELETE'),
+  updateTestimonial: (id: string, data: any) => sendData(`testimonials.php?id=${id}`, 'PUT', data),
+
+  getRawActions: () => fetchData<ApiAction[]>('actions.php').then(d => d || []),
+  getRawArticles: () => fetchData<ApiArticle[]>('articles.php').then(d => d || []),
+  getRawPartners: () => fetchData<ApiPartner[]>('partners.php').then(d => d || []),
   
-  // Site configuration and personnel
   getSettings: () => fetchData<SiteSettings>('settings.php'),
   getTeam: () => fetchData<TeamMember[]>('team.php').then(d => d || []),
-  getTestimonials: () => fetchData<Testimonial[]>('testimonials.php').then(d => d || []),
+
+  sendData
 };

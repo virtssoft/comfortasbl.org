@@ -1,30 +1,30 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Heart, BookOpen, HandCoins, Wheat, Palette, ChevronLeft, ChevronRight, Eye, Users, MousePointer2, TrendingUp, Download, Mail, CheckCircle, Newspaper } from 'lucide-react';
+import { ArrowRight, Heart, BookOpen, HandCoins, Wheat, Palette, ChevronLeft, ChevronRight, Eye, Download, CheckCircle, Newspaper, Quote, MessageSquare, Send, User, Briefcase, Phone, Mail } from 'lucide-react';
 import { DOMAINS } from './constants';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
+import { api } from '../services/api';
 import { HeroSkeleton, CardSkeleton } from '../components/Skeletons';
 
 const Home: React.FC = () => {
   const { t } = useLanguage();
-  const { projects, blogPosts, bulletins, stats, loading } = useData();
+  const { projects, blogPosts, bulletins, testimonials, loading } = useData();
   
   const [currentHero, setCurrentHero] = useState(0);
   const heroItems = blogPosts.slice(0, 5);
 
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
-
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) {
-      setSubscribed(true);
-      setTimeout(() => setSubscribed(false), 5000);
-      setEmail('');
-    }
-  };
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [testimonyForm, setTestimonyForm] = useState({
+    nom_complet: '',
+    email: '',
+    telephone: '',
+    role: 'benevole',
+    organisation: '',
+    message: ''
+  });
+  const [testimonyLoading, setTestimonyLoading] = useState(false);
 
   const nextHero = useCallback(() => {
     if (heroItems.length === 0) return;
@@ -36,12 +36,51 @@ const Home: React.FC = () => {
     setCurrentHero(prev => (prev - 1 + heroItems.length) % heroItems.length);
   }, [heroItems.length]);
 
+  const nextTestimonial = useCallback(() => {
+    if (testimonials.length === 0) return;
+    setCurrentTestimonial(prev => (prev + 1) % testimonials.length);
+  }, [testimonials.length]);
+
   useEffect(() => {
     if (heroItems.length > 1) {
       const timer = setInterval(nextHero, 10000);
       return () => clearInterval(timer);
     }
   }, [heroItems.length, nextHero]);
+
+  useEffect(() => {
+    if (testimonials.length > 1) {
+      const timer = setInterval(nextTestimonial, 8000);
+      return () => clearInterval(timer);
+    }
+  }, [testimonials.length, nextTestimonial]);
+
+  const handleTestimonySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setTestimonyLoading(true);
+    try {
+      // Envoi vers https://api.comfortasbl.org/testimonials.php en POST
+      const res = await api.sendData('testimonials.php', 'POST', {
+          nom_complet: testimonyForm.nom_complet,
+          email: testimonyForm.email,
+          telephone: testimonyForm.telephone,
+          role: testimonyForm.role,
+          organisation: testimonyForm.organisation || null,
+          message: testimonyForm.message,
+          status: 'actif'
+      });
+      
+      if (res.success || res.message?.includes('succès')) {
+          // Rafraîchissement de la page comme demandé
+          window.location.reload();
+      }
+    } catch (err) {
+      console.error("Testimonial API Error:", err);
+      alert("Une erreur est survenue lors de l'envoi du témoignage.");
+    } finally {
+      setTestimonyLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -120,7 +159,7 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 🏛️ INSTITUTIONAL MISSION & STATS */}
+      {/* 🏛️ MISSION */}
       <section className="py-32 bg-white relative">
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-24 items-center">
@@ -132,31 +171,17 @@ const Home: React.FC = () => {
                 L'intégrité au service de <span className="italic font-light">l'humanité</span>.
               </h2>
               <p className="text-xl text-gray-600 font-light leading-relaxed mb-12">
-                COMFORT Asbl bâtit des ponts entre l'urgence humanitaire et le développement durable en RDC. Notre transparence est le socle de notre engagement.
+                COMFORT Asbl bâtit des ponts entre l'urgence humanitaire et le développement durable en RDC. Notre transparence est le socle de notre engagement institutionnel au service des plus démunis.
               </p>
-              
-              <div className="bg-comfort-light p-10 border border-gray-100 shadow-sm space-y-10">
-                 <div className="flex items-center justify-between border-b border-gray-100 pb-6">
-                    <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('about_section.stats_title')}</h4>
-                    <TrendingUp size={16} className="text-comfort-gold" />
+              <div className="flex items-center space-x-8">
+                 <div className="flex flex-col">
+                    <span className="text-comfort-blue font-serif font-bold text-4xl mb-1">20+</span>
+                    <span className="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Ans de résilience</span>
                  </div>
-                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                    <div className="flex flex-col">
-                       <span className="text-comfort-blue font-serif font-bold text-3xl mb-1">{(stats?.visitors || 0).toLocaleString()}</span>
-                       <span className="text-[9px] uppercase tracking-widest text-gray-400 font-bold">{t('about_section.visitors')}</span>
-                    </div>
-                    <div className="flex flex-col">
-                       <span className="text-comfort-blue font-serif font-bold text-3xl mb-1">{(stats?.members || 0).toLocaleString()}</span>
-                       <span className="text-[9px] uppercase tracking-widest text-gray-400 font-bold">{t('home.stats_members')}</span>
-                    </div>
-                    <div className="flex flex-col">
-                       <span className="text-comfort-blue font-serif font-bold text-3xl mb-1">{(stats?.volunteers || 0).toLocaleString()}</span>
-                       <span className="text-[9px] uppercase tracking-widest text-gray-400 font-bold">{t('home.stats_volunteers')}</span>
-                    </div>
-                    <div className="flex flex-col">
-                       <span className="text-comfort-blue font-serif font-bold text-3xl mb-1">${(stats?.donations || 0).toLocaleString()}</span>
-                       <span className="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Investissement</span>
-                    </div>
+                 <div className="h-10 w-[1px] bg-gray-100"></div>
+                 <div className="flex flex-col">
+                    <span className="text-comfort-blue font-serif font-bold text-4xl mb-1">500k</span>
+                    <span className="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Vies Impactées</span>
                  </div>
               </div>
             </div>
@@ -169,8 +194,8 @@ const Home: React.FC = () => {
                </div>
                <div className="space-y-6">
                   <div className="p-8 bg-comfort-gold text-white rounded-sm shadow-xl">
-                    <h4 className="text-5xl font-serif font-bold mb-2">20</h4>
-                    <p className="text-[10px] uppercase tracking-widest font-bold opacity-80">Ans de résilience</p>
+                    <h4 className="text-5xl font-serif font-bold mb-2">Impact</h4>
+                    <p className="text-[10px] uppercase tracking-widest font-bold opacity-80">Au cœur du terrain</p>
                   </div>
                   <div className="aspect-[3/4] rounded-sm overflow-hidden shadow-2xl">
                     <img src="https://api.comfortasbl.org/assets/images/about-hero.jpg" className="w-full h-full object-cover" alt="Impact" />
@@ -181,7 +206,7 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 🏛️ PILIERS D'INTERVENTION */}
+      {/* 🏛️ DOMAINES */}
       <section className="py-32 bg-comfort-light border-y border-gray-100">
         <div className="container mx-auto px-6 text-center">
            <h2 className="text-4xl font-serif font-bold text-comfort-blue mb-20">Domaines Stratégiques</h2>
@@ -202,8 +227,114 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 🏛️ BULLETIN D'INFORMATION (NEWSLETTER ARCHIVE) */}
-      <section className="py-32 bg-white">
+      {/* 🏛️ TESTIMONIALS SECTION */}
+      <section className="py-32 bg-white overflow-hidden">
+        <div className="container mx-auto px-6">
+           <div className="text-center mb-24">
+              <h2 className="text-4xl font-serif font-bold text-comfort-blue mb-4">{t('home.testimonials_title')}</h2>
+              <p className="text-gray-500 font-light max-w-2xl mx-auto">{t('home.testimonials_subtitle')}</p>
+              <div className="h-1 w-16 bg-comfort-gold mx-auto mt-8"></div>
+           </div>
+
+           {/* Carousel */}
+           <div className="relative max-w-5xl mx-auto mb-32">
+              <div className="bg-comfort-light p-12 md:p-20 relative border border-gray-50 shadow-sm rounded-sm">
+                 <Quote size={80} className="absolute top-10 right-10 text-comfort-gold opacity-10 pointer-events-none" />
+                 
+                 {testimonials.length > 0 ? (
+                    <div className="relative z-10 animate-in fade-in duration-1000">
+                       <p className="text-2xl md:text-3xl font-serif italic text-comfort-blue leading-relaxed mb-12">
+                         "{testimonials[currentTestimonial].message}"
+                       </p>
+                       <div className="flex items-center space-x-6">
+                          <div className="w-16 h-16 bg-comfort-blue rounded-full flex items-center justify-center text-white text-xl font-bold shadow-xl">
+                             {testimonials[currentTestimonial].nom_complet.charAt(0)}
+                          </div>
+                          <div>
+                             <h4 className="text-lg font-bold text-comfort-blue uppercase tracking-widest">{testimonials[currentTestimonial].nom_complet}</h4>
+                             <p className="text-xs text-comfort-gold font-bold uppercase tracking-widest flex items-center mt-1">
+                                {testimonials[currentTestimonial].role} {testimonials[currentTestimonial].organisation && `• ${testimonials[currentTestimonial].organisation}`}
+                             </p>
+                          </div>
+                       </div>
+                    </div>
+                 ) : (
+                    <p className="text-center text-gray-400 italic">Aucun témoignage disponible pour le moment.</p>
+                 )}
+
+                 <div className="absolute bottom-8 right-12 flex space-x-4">
+                    <button onClick={() => setCurrentTestimonial(prev => (prev - 1 + testimonials.length) % testimonials.length)} className="p-3 bg-white border border-gray-100 rounded-full hover:border-comfort-gold transition-all shadow-sm">
+                       <ChevronLeft size={20} className="text-comfort-blue" />
+                    </button>
+                    <button onClick={nextTestimonial} className="p-3 bg-white border border-gray-100 rounded-full hover:border-comfort-gold transition-all shadow-sm">
+                       <ChevronRight size={20} className="text-comfort-blue" />
+                    </button>
+                 </div>
+              </div>
+           </div>
+
+           {/* Submission Form */}
+           <div className="max-w-4xl mx-auto bg-comfort-dark p-12 md:p-16 rounded-sm shadow-2xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16"></div>
+              
+              <div className="relative z-10 text-center mb-12">
+                 <MessageSquare size={40} className="text-comfort-gold mx-auto mb-6" />
+                 <h3 className="text-3xl font-serif font-bold text-white mb-4">{t('home.testimonial_form_title')}</h3>
+                 <p className="text-gray-400 font-light italic">Votre voix compte pour mobiliser davantage d'acteurs de changement.</p>
+              </div>
+
+              <form onSubmit={handleTestimonySubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+                <div>
+                   <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Nom Complet</label>
+                   <div className="relative">
+                      <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-comfort-gold" />
+                      <input type="text" required value={testimonyForm.nom_complet} onChange={e => setTestimonyForm({...testimonyForm, nom_complet: e.target.value})} className="w-full bg-white/5 border border-white/10 px-12 py-4 text-white text-sm outline-none focus:border-comfort-gold transition-all" placeholder="Jean Mukoko" />
+                   </div>
+                </div>
+                <div>
+                   <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Email</label>
+                   <div className="relative">
+                      <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-comfort-gold" />
+                      <input type="email" required value={testimonyForm.email} onChange={e => setTestimonyForm({...testimonyForm, email: e.target.value})} className="w-full bg-white/5 border border-white/10 px-12 py-4 text-white text-sm outline-none focus:border-comfort-gold transition-all" placeholder="jean.mukoko@gmail.com" />
+                   </div>
+                </div>
+                <div>
+                   <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Téléphone</label>
+                   <div className="relative">
+                      <Phone size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-comfort-gold" />
+                      <input type="tel" required value={testimonyForm.telephone} onChange={e => setTestimonyForm({...testimonyForm, telephone: e.target.value})} className="w-full bg-white/5 border border-white/10 px-12 py-4 text-white text-sm outline-none focus:border-comfort-gold transition-all" placeholder="+243..." />
+                   </div>
+                </div>
+                <div>
+                   <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Rôle / Qualité</label>
+                   <div className="relative">
+                      <Briefcase size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-comfort-gold" />
+                      <input type="text" required value={testimonyForm.role} onChange={e => setTestimonyForm({...testimonyForm, role: e.target.value})} className="w-full bg-white/5 border border-white/10 px-12 py-4 text-white text-sm outline-none focus:border-comfort-gold transition-all" placeholder="Bénévole, Partenaire..." />
+                   </div>
+                </div>
+                <div className="md:col-span-2">
+                   <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Organisation (Optionnel)</label>
+                   <div className="relative">
+                      <HandCoins size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-comfort-gold" />
+                      <input type="text" value={testimonyForm.organisation} onChange={e => setTestimonyForm({...testimonyForm, organisation: e.target.value})} className="w-full bg-white/5 border border-white/10 px-12 py-4 text-white text-sm outline-none focus:border-comfort-gold transition-all" placeholder="Association Solidarité" />
+                   </div>
+                </div>
+                <div className="md:col-span-2">
+                   <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Votre Message</label>
+                   <textarea required rows={4} value={testimonyForm.message} onChange={e => setTestimonyForm({...testimonyForm, message: e.target.value})} className="w-full bg-white/5 border border-white/10 p-5 text-white text-sm outline-none focus:border-comfort-gold transition-all resize-none" placeholder="Racontez-nous l'impact de COMFORT..." />
+                </div>
+                <div className="md:col-span-2 text-center">
+                   <button type="submit" disabled={testimonyLoading} className="inline-flex items-center space-x-4 bg-comfort-gold text-white px-12 py-5 font-bold uppercase tracking-widest hover:bg-white hover:text-comfort-dark transition-all shadow-2xl disabled:opacity-50">
+                      {testimonyLoading ? "Transmission..." : <><Send size={16} /> <span>Envoyer mon témoignage</span></>}
+                   </button>
+                </div>
+              </form>
+           </div>
+        </div>
+      </section>
+
+      {/* 🏛️ GAZETTE */}
+      <section className="py-32 bg-comfort-light">
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-between mb-20">
              <div>
@@ -217,8 +348,8 @@ const Home: React.FC = () => {
 
           <div className="grid md:grid-cols-2 gap-12">
             {bulletins.slice(0, 2).map((bulletin) => (
-              <div key={bulletin.id} className="bg-comfort-light p-12 border border-gray-100 flex flex-col md:flex-row items-center gap-10 hover:shadow-2xl transition-all group">
-                 <div className="w-24 h-24 bg-white shadow-xl flex items-center justify-center text-comfort-blue group-hover:bg-comfort-blue group-hover:text-white transition-all">
+              <div key={bulletin.id} className="bg-white p-12 border border-gray-100 flex flex-col md:flex-row items-center gap-10 hover:shadow-2xl transition-all group">
+                 <div className="w-24 h-24 bg-comfort-blue/5 flex items-center justify-center text-comfort-blue group-hover:bg-comfort-blue group-hover:text-white transition-all shadow-sm">
                     <Newspaper size={32} />
                  </div>
                  <div className="flex-1">
@@ -235,39 +366,7 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 🏛️ NEWSLETTER SIGNUP */}
-      <section className="py-32 bg-comfort-blue text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/3 h-full bg-comfort-gold/5 skew-x-12 translate-x-1/2"></div>
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-             <Mail size={48} className="text-comfort-gold mx-auto mb-8" />
-             <h2 className="text-4xl md:text-5xl font-serif font-bold mb-6">{t('home.subscribe_title')}</h2>
-             <p className="text-xl text-blue-100 font-light mb-12 leading-relaxed">
-               {t('home.subscribe_text')}
-             </p>
-             
-             {subscribed ? (
-               <div className="flex items-center justify-center space-x-4 animate-in zoom-in">
-                  <CheckCircle className="text-comfort-gold" size={24} />
-                  <span className="text-xl font-bold">Inscription validée ! Merci pour votre confiance.</span>
-               </div>
-             ) : (
-               <form onSubmit={handleSubscribe} className="flex flex-col md:flex-row gap-4 max-w-2xl mx-auto">
-                 <input 
-                    type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
-                    placeholder="votre.email@institution.org"
-                    className="flex-1 bg-white/10 border border-white/20 px-8 py-5 text-lg outline-none focus:bg-white/20 transition-all font-light"
-                 />
-                 <button className="bg-comfort-gold text-white px-12 py-5 font-bold uppercase tracking-widest hover:bg-white hover:text-comfort-blue transition-all shadow-2xl text-xs whitespace-nowrap">
-                   {t('home.subscribe_btn')}
-                 </button>
-               </form>
-             )}
-          </div>
-        </div>
-      </section>
-
-      {/* 🏛️ BLOG / ACTUALITÉS */}
+      {/* 🏛️ BLOG */}
       <section className="py-32 bg-white">
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-between mb-20">

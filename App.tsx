@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, useLocation, useParams, Link } from 'react-router-dom';
 import Header from './components/Header';
@@ -8,7 +7,7 @@ import About from './pages/About';
 import Donate from './pages/Donate';
 import Projects from './pages/Projects';
 import Blog from './pages/Blog'; 
-import Bulletins from './pages/Bulletins'; // Nouveau composant à créer ou adapter de l'ancien Blog
+import Bulletins from './pages/Bulletins'; 
 import Account from './pages/Account'; 
 import AdminDashboard from './pages/AdminDashboard'; 
 import GenericPage from './pages/GenericPage';
@@ -25,22 +24,9 @@ import { api } from './services/api';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
-  
   useEffect(() => {
     window.scrollTo(0, 0);
-    
-    const pageViews = JSON.parse(localStorage.getItem('comfort_page_views') || '{}') as Record<string, number>;
-    pageViews[pathname] = (pageViews[pathname] || 0) + 1;
-    localStorage.setItem('comfort_page_views', JSON.stringify(pageViews));
-    
-    const hasVisited = localStorage.getItem('comfort_has_visited');
-    if (!hasVisited) {
-        localStorage.setItem('comfort_has_visited', 'true');
-        const currentVisitors = parseInt(localStorage.getItem('comfort_visitors_count') || '12450');
-        localStorage.setItem('comfort_visitors_count', (currentVisitors + 1).toString());
-    }
   }, [pathname]);
-  
   return null;
 };
 
@@ -53,11 +39,12 @@ const DetailPage = ({ type }: { type: 'project' | 'blog' }) => {
         ? projects.find(p => p.id === id) 
         : blogPosts.find(b => b.id === id);
 
-    // Incrémenter les vues au chargement si c'est un article de blog
+    // L'incrémentation est gérée par le serveur PHP lors du GET par ID dans api.getBlogPostsById
+    // qui est normalement appelé lors d'un chargement spécifique, mais ici on utilise useData.
+    // Pour garantir le compteur, on peut forcer un rafraîchissement local des données.
     useEffect(() => {
         if (type === 'blog' && id) {
-            // L'API PHP articles.php incrémente déjà les vues lors du GET par ID
-            // On peut appeler fetchData ou un endpoint spécifique si besoin
+            api.getBlogPostsById(id);
         }
     }, [type, id]);
 
@@ -84,7 +71,7 @@ const DetailPage = ({ type }: { type: 'project' | 'blog' }) => {
                         </span>
                         {type === 'blog' && (
                             <span className="flex items-center text-comfort-dark font-bold text-[10px] uppercase tracking-widest">
-                                <Eye size={14} className="mr-2 text-comfort-gold" /> {item.views} vues
+                                <Eye size={14} className="mr-2 text-comfort-gold" /> {item.views} lectures
                             </span>
                         )}
                     </div>
@@ -98,7 +85,7 @@ const DetailPage = ({ type }: { type: 'project' | 'blog' }) => {
                 <div className="grid lg:grid-cols-12 gap-20">
                     <div className="lg:col-span-8">
                         <div className="prose prose-xl text-gray-600 font-light leading-relaxed max-w-none">
-                            {(item as any).description || (item as any).excerpt || "Chargement du contenu détaillé..."}
+                            {(item as any).description || (item as any).excerpt || (item as any).content || "Chargement du contenu détaillé..."}
                         </div>
                     </div>
                     <aside className="lg:col-span-4">
@@ -107,6 +94,11 @@ const DetailPage = ({ type }: { type: 'project' | 'blog' }) => {
                             <div className="space-y-8">
                                 <div><span className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Entité</span><p className="text-sm font-bold text-comfort-dark">COMFORT Asbl</p></div>
                                 <div><span className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Domaine</span><div className="flex items-center text-comfort-blue font-bold text-xs"><Tag size={14} className="mr-2 text-comfort-gold" /> {item.category}</div></div>
+                                <div className="pt-8 border-t border-gray-100">
+                                   <Link to="/donate" className="bg-comfort-blue text-white w-full py-4 flex items-center justify-center font-bold uppercase text-[10px] tracking-widest hover:bg-comfort-gold transition-all shadow-xl">
+                                      Soutenir ce projet
+                                   </Link>
+                                </div>
                             </div>
                         </div>
                     </aside>

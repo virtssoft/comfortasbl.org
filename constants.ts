@@ -1,4 +1,3 @@
-
 import { Project, BlogPost, Domain, Testimonial, Partner, TeamMember } from './types';
 
 export const CONTACT_INFO = {
@@ -101,24 +100,36 @@ export const BLOG_POSTS: BlogPost[] = [
 export const TESTIMONIALS: Testimonial[] = [
   {
     id: '1',
-    name: "Marie Kahindo",
+    nom_complet: "Marie Kahindo",
+    email: "marie@example.com",
+    telephone: "+243 000 000 000",
     role: "Bénéficiaire, Masisi",
-    content: "Grâce à COMFORT, mes enfants peuvent enfin aller à l'école en toute sécurité. C'est un espoir qui renaît pour toute notre famille.",
-    image: "https://picsum.photos/seed/person1/200/200"
+    organisation: null,
+    message: "Grâce à COMFORT, mes enfants peuvent enfin aller à l'école en toute sécurité. C'est un espoir qui renaît pour toute notre famille.",
+    status: "publié",
+    created_at: "2023-10-01"
   },
   {
     id: '2',
-    name: "Dr. Pierre Dubois",
+    nom_complet: "Dr. Pierre Dubois",
+    email: "pierre@example.com",
+    telephone: "+243 111 111 111",
     role: "Partenaire International",
-    content: "Une organisation transparente et efficace sur le terrain. COMFORT Asbl est un modèle de gestion humanitaire locale.",
-    image: "https://picsum.photos/seed/person2/200/200"
+    organisation: "NGO Global",
+    message: "Une organisation transparente et efficace sur le terrain. COMFORT Asbl est un modèle de gestion humanitaire locale.",
+    status: "publié",
+    created_at: "2023-11-01"
   },
   {
     id: '3',
-    name: "Sarah M.",
+    nom_complet: "Sarah M.",
+    email: "sarah@example.com",
+    telephone: "+243 222 222 222",
     role: "Bénévole",
-    content: "Voir l'impact direct de nos actions sur les sourires des enfants est la plus belle des récompenses. Rejoignez-nous !",
-    image: "https://picsum.photos/seed/person3/200/200"
+    organisation: null,
+    message: "Voir l'impact direct de nos actions sur les sourires des enfants est la plus belle des récompenses. Rejoignez-nous !",
+    status: "publié",
+    created_at: "2023-12-01"
   }
 ];
 
