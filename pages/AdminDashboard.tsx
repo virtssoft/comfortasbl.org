@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, FileText, Settings, LogOut, DollarSign, Activity, Bell, Mail, Plus, Edit, Trash2, Handshake, Briefcase, X, Check, Eye, UploadCloud, ChevronLeft, ChevronRight, ShieldCheck, TrendingUp, Heart, Key, AtSign, Newspaper, Quote } from 'lucide-react';
+import { LayoutDashboard, Users, FileText, Settings, LogOut, DollarSign, Activity, Bell, Mail, Plus, Edit, Trash2, Handshake, Briefcase, X, Check, Eye, UploadCloud, ChevronLeft, ChevronRight, ShieldCheck, TrendingUp, Heart, Key, AtSign, Newspaper, Quote, FileUp } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import { api, API_BASE_URL, ApiUser, ApiAction, ApiArticle, ApiDonation, ApiPartner } from '../services/api';
@@ -128,6 +129,7 @@ const AdminDashboard: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'project'|'blog'|'partner'|'user'|'donation'|'bulletin'|'testimonial'>('project');
   const [editingItem, setEditingItem] = useState<any>(null);
+  const [bulletinFile, setBulletinFile] = useState<File | null>(null);
 
   const loadAllData = async () => {
         setUsers(await api.getUsers());
@@ -152,6 +154,7 @@ const AdminDashboard: React.FC = () => {
   const handleEdit = (type: any, item: any) => {
       setModalType(type);
       setEditingItem(item);
+      setBulletinFile(null);
       setIsModalOpen(true);
   };
 
@@ -162,8 +165,9 @@ const AdminDashboard: React.FC = () => {
       else if (type === 'blog') defaultItem = { title: '', content: '', author: user?.username || 'Admin', categorie: 'Actualité', image_url: '', status: 'publié' };
       else if (type === 'partner') defaultItem = { nom: '', description: '', site_web: '', logo_url: '', type: 'Corporate' };
       else if (type === 'user') defaultItem = { username: '', email: '', password: '', role: 'user' };
-      else if (type === 'bulletin') defaultItem = { title: '', summary: '', pdf_link: '', slug: '' };
+      else if (type === 'bulletin') defaultItem = { title: '', resume: '', pdf_path: '', slug: '' };
       setEditingItem(defaultItem); 
+      setBulletinFile(null);
       setIsModalOpen(true);
   };
 
@@ -189,7 +193,6 @@ const AdminDashboard: React.FC = () => {
           payload = { titre: editingItem.titre, description: editingItem.description, categorie: editingItem.categorie, statut: editingItem.statut, image_url: editingItem.image_url, date_debut: editingItem.date_debut };
           res = id ? await api.updateAction(id, payload) : await api.createAction(payload);
       } else if (modalType === 'blog') {
-          // RESPECT DE LA STRUCTURE PHP : title, content
           payload = { title: editingItem.title, content: editingItem.content, author: editingItem.author, categorie: editingItem.categorie, image_url: editingItem.image_url, status: editingItem.status };
           res = id ? await api.updateArticle(id, payload) : await api.createArticle(payload);
       } else if (modalType === 'partner') {
@@ -200,8 +203,22 @@ const AdminDashboard: React.FC = () => {
           if (!id || editingItem.password) payload.password = editingItem.password;
           res = id ? await api.updateUser(id, payload) : await api.createUser(payload);
       } else if (modalType === 'bulletin') {
-          payload = { title: editingItem.title, summary: editingItem.summary, pdf_link: editingItem.pdf_link, slug: editingItem.slug };
-          res = id ? await api.updateBulletin(id, payload) : await api.createBulletin(payload);
+          if (id) {
+              // Mode édition : JSON PUT (titre, resume)
+              payload = { title: editingItem.title, resume: editingItem.resume };
+              res = await api.updateBulletin(id, payload);
+          } else {
+              // Mode création : FormData POST (title, resume, pdf)
+              if (!bulletinFile) {
+                  alert("Veuillez sélectionner un fichier PDF institutionnel.");
+                  return;
+              }
+              const formData = new FormData();
+              formData.append('title', editingItem.title);
+              formData.append('resume', editingItem.resume);
+              formData.append('pdf', bulletinFile);
+              res = await api.createBulletin(formData);
+          }
       } else if (modalType === 'testimonial') {
           res = await api.updateTestimonial(id, { status: editingItem.status });
       }
@@ -210,7 +227,7 @@ const AdminDashboard: React.FC = () => {
           setIsModalOpen(false); 
           loadAllData(); 
       } else {
-          alert("Erreur: " + (res?.error || "Problème serveur lors de l'enregistrement."));
+          alert("Erreur: " + (res?.error || "Problème serveur lors de l'enregistrement. Vérifiez les champs obligatoires."));
       }
   };
 
@@ -250,8 +267,26 @@ const AdminDashboard: React.FC = () => {
              ) : modalType === 'bulletin' ? (
                 <>
                     <FormField label="Titre du Bulletin" value={editingItem.title} onChange={v => setEditingItem({...editingItem, title: v})} />
-                    <FormField label="Résumé" type="textarea" value={editingItem.summary} onChange={v => setEditingItem({...editingItem, summary: v})} />
-                    <FormField label="Lien PDF (Relatif ou Absolu)" value={editingItem.pdf_link} onChange={v => setEditingItem({...editingItem, pdf_link: v})} />
+                    <FormField label="Résumé Exécutif" type="textarea" value={editingItem.resume} onChange={v => setEditingItem({...editingItem, resume: v})} />
+                    {!editingItem.id && (
+                        <div className="space-y-2">
+                             <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Fichier PDF Officiel</label>
+                             <div className="relative group">
+                                <input 
+                                    type="file" 
+                                    accept=".pdf" 
+                                    onChange={(e) => setBulletinFile(e.target.files ? e.target.files[0] : null)} 
+                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                />
+                                <div className={`border-2 border-dashed p-8 text-center transition-all ${bulletinFile ? 'border-comfort-gold bg-comfort-gold/5' : 'border-gray-200 bg-gray-50'}`}>
+                                    <FileUp className={`mx-auto mb-2 ${bulletinFile ? 'text-comfort-gold' : 'text-gray-300'}`} size={32} />
+                                    <p className="text-[10px] font-bold uppercase tracking-widest">
+                                        {bulletinFile ? bulletinFile.name : "Cliquez pour uploader le PDF"}
+                                    </p>
+                                </div>
+                             </div>
+                        </div>
+                    )}
                 </>
              ) : modalType === 'testimonial' ? (
                 <FormField label="Statut de Publication" type="select" options={['actif', 'en_attente', 'supprimé']} value={editingItem.status} onChange={v => setEditingItem({...editingItem, status: v})} />
@@ -269,10 +304,10 @@ const AdminDashboard: React.FC = () => {
                { id: 'dashboard', icon: LayoutDashboard, label: 'Tableau de bord' },
                { id: 'users', icon: Users, label: 'Utilisateurs' },
                { id: 'content', icon: FileText, label: 'Actions Terrain' },
-               { id: 'blog', icon: Newspaper, label: 'Actualités & Vues' },
+               { id: 'blog', icon: Newspaper, label: 'Gazette & Vues' },
                { id: 'bulletins', icon: Newspaper, label: 'Bulletins PDF' },
                { id: 'testimonials', icon: Quote, label: 'Témoignages' },
-               { id: 'finances', icon: DollarSign, label: 'Dons Reçus' },
+               { id: 'finances', icon: DollarSign, label: 'Flux Financiers' },
            ].map(item => (
                 <button 
                     key={item.id}
@@ -293,7 +328,7 @@ const AdminDashboard: React.FC = () => {
       {/* MAIN PORTAL */}
       <main className="flex-1 overflow-y-auto bg-white">
         <header className="bg-white/80 backdrop-blur-md py-6 px-12 flex justify-between items-center sticky top-0 z-10 border-b border-gray-50">
-           <h1 className="text-sm font-bold uppercase tracking-[0.3em] text-gray-400">Administration : <span className="text-comfort-blue">{activeTab}</span></h1>
+           <h1 className="text-sm font-bold uppercase tracking-[0.3em] text-gray-400">Gouvernance : <span className="text-comfort-blue">{activeTab}</span></h1>
            <div className="flex items-center space-x-6">
               <span className="text-xs font-bold uppercase tracking-widest text-gray-500">{user?.username}</span>
               <div className="h-10 w-10 rounded-full bg-comfort-blue text-white flex items-center justify-center font-bold shadow-xl border-2 border-white uppercase">
@@ -307,25 +342,25 @@ const AdminDashboard: React.FC = () => {
                 <div className="space-y-12 animate-in fade-in duration-700">
                     <div className="bg-comfort-light p-10 border border-gray-100 shadow-sm space-y-10 rounded-sm">
                        <div className="flex items-center justify-between border-b border-gray-100 pb-6">
-                          <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Statistiques Consolidées</h4>
+                          <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Analytique Réseau</h4>
                           <TrendingUp size={16} className="text-comfort-gold" />
                        </div>
                        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                           <div className="flex flex-col">
                              <span className="text-comfort-blue font-serif font-bold text-3xl mb-1">{stats?.visitors || 0}</span>
-                             <span className="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Visiteurs</span>
+                             <span className="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Audience Portée</span>
                           </div>
                           <div className="flex flex-col">
                              <span className="text-comfort-blue font-serif font-bold text-3xl mb-1">{users.length}</span>
-                             <span className="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Gestionnaires</span>
+                             <span className="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Administrateurs</span>
                           </div>
                           <div className="flex flex-col">
                              <span className="text-comfort-blue font-serif font-bold text-3xl mb-1">{projects.length}</span>
-                             <span className="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Actions</span>
+                             <span className="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Interventions</span>
                           </div>
                           <div className="flex flex-col">
                              <span className="text-comfort-blue font-serif font-bold text-3xl mb-1">{blogs.reduce((acc, curr) => acc + (curr.views || 0), 0)}</span>
-                             <span className="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Lectures d'Impact</span>
+                             <span className="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Impact Lectures</span>
                           </div>
                        </div>
                     </div>
@@ -341,7 +376,7 @@ const AdminDashboard: React.FC = () => {
                         {activeTab !== 'finances' && activeTab !== 'testimonials' && (
                             <button onClick={() => handleCreate(activeTab === 'users' ? 'user' : activeTab === 'content' ? 'project' : activeTab === 'blog' ? 'blog' : activeTab === 'bulletins' ? 'bulletin' : 'project')} 
                                     className="bg-comfort-blue text-white px-8 py-4 font-bold uppercase tracking-widest text-[10px] hover:bg-comfort-gold transition-all shadow-xl">
-                                <Plus size={16} className="inline mr-2" /> Créer
+                                <Plus size={16} className="inline mr-2" /> Nouvelle Entrée
                             </button>
                         )}
                     </div>
@@ -350,7 +385,7 @@ const AdminDashboard: React.FC = () => {
                         <table className="min-w-full divide-y divide-gray-50">
                             <thead className="bg-gray-50/50">
                                 <tr>
-                                    <th className="px-8 py-5 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">Détails</th>
+                                    <th className="px-8 py-5 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">Détails Système</th>
                                     <th className="px-8 py-5 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">Statut</th>
                                     <th className="px-8 py-5 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest">Actions</th>
                                 </tr>
@@ -368,7 +403,7 @@ const AdminDashboard: React.FC = () => {
                                 ))}
                                 {activeTab === 'blog' && blogs.map(a => (
                                     <tr key={a.id}>
-                                        <td className="px-8 py-6 font-bold text-comfort-blue">{a.title} <span className="block text-[10px] text-gray-400 font-bold uppercase mt-1 flex items-center"><Eye size={10} className="mr-2" /> {a.views} vues</span></td>
+                                        <td className="px-8 py-6 font-bold text-comfort-blue">{a.title} <span className="block text-[10px] text-gray-400 font-bold uppercase mt-1 flex items-center"><Eye size={10} className="mr-2" /> {a.views} lectures</span></td>
                                         <td className="px-8 py-6 uppercase text-[10px] font-bold">{a.status}</td>
                                         <td className="px-8 py-6 text-right flex justify-end space-x-4">
                                             <button onClick={() => handleEdit('blog', a)} className="text-gray-400 hover:text-comfort-gold transition-colors"><Edit size={18}/></button>
@@ -378,8 +413,8 @@ const AdminDashboard: React.FC = () => {
                                 ))}
                                 {activeTab === 'bulletins' && bulletins.map(b => (
                                     <tr key={b.id}>
-                                        <td className="px-8 py-6 font-bold text-comfort-blue">{b.title}</td>
-                                        <td className="px-8 py-6 text-[10px] text-gray-400">{b.date}</td>
+                                        <td className="px-8 py-6 font-bold text-comfort-blue">{b.title} <span className="block text-[10px] text-gray-400 font-bold uppercase mt-1">{b.slug}</span></td>
+                                        <td className="px-8 py-6 text-[10px] text-gray-400">PDF Archivé</td>
                                         <td className="px-8 py-6 text-right flex justify-end space-x-4">
                                             <button onClick={() => handleEdit('bulletin', b)} className="text-gray-400 hover:text-comfort-gold transition-colors"><Edit size={18}/></button>
                                             <button onClick={() => handleDelete('bulletin', b.id)} className="text-red-300 hover:text-red-600 transition-colors"><Trash2 size={18}/></button>
@@ -400,7 +435,7 @@ const AdminDashboard: React.FC = () => {
                                     <tr key={d.id}>
                                         <td className="px-8 py-6 font-serif font-bold text-comfort-blue text-lg">${d.montant} <span className="block text-[10px] font-sans font-bold text-gray-400 uppercase tracking-widest mt-1">{d.donateur_nom}</span></td>
                                         <td className="px-8 py-6"><span className={`px-3 py-1 text-[10px] font-bold uppercase tracking-widest ${d.status === 'confirmé' ? 'bg-comfort-gold text-white' : 'bg-gray-100 text-gray-400'}`}>{d.status}</span></td>
-                                        <td className="px-8 py-6 text-right"><button onClick={() => handleEdit('donation', d)} className="text-comfort-blue font-bold uppercase text-[10px] tracking-widest border border-comfort-blue/20 px-4 py-2 hover:bg-comfort-blue hover:text-white transition-all">Gérer</button></td>
+                                        <td className="px-8 py-6 text-right"><button onClick={() => handleEdit('donation', d)} className="text-comfort-blue font-bold uppercase text-[10px] tracking-widest border border-comfort-blue/20 px-4 py-2 hover:bg-comfort-blue hover:text-white transition-all">Action</button></td>
                                     </tr>
                                 ))}
                                 {activeTab === 'content' && projects.map(p => (

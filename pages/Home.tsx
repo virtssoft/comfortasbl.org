@@ -5,7 +5,7 @@ import { ArrowRight, Heart, BookOpen, HandCoins, Wheat, Palette, ChevronLeft, Ch
 import { DOMAINS } from './constants';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
-import { api } from '../services/api';
+import { api, API_BASE_URL } from '../services/api';
 import { HeroSkeleton, CardSkeleton } from '../components/Skeletons';
 
 const Home: React.FC = () => {
@@ -59,7 +59,6 @@ const Home: React.FC = () => {
     e.preventDefault();
     setTestimonyLoading(true);
     try {
-      // Envoi vers https://api.comfortasbl.org/testimonials.php en POST
       const res = await api.sendData('testimonials.php', 'POST', {
           nom_complet: testimonyForm.nom_complet,
           email: testimonyForm.email,
@@ -71,7 +70,6 @@ const Home: React.FC = () => {
       });
       
       if (res.success || res.message?.includes('succès')) {
-          // Rafraîchissement de la page comme demandé
           window.location.reload();
       }
     } catch (err) {
@@ -103,6 +101,12 @@ const Home: React.FC = () => {
       case 'culture': return <Palette {...props} />;
       default: return <Heart {...props} />;
     }
+  };
+
+  const getFullPdfUrl = (path: string) => {
+      if (!path) return '#';
+      if (path.startsWith('http')) return path;
+      return `${API_BASE_URL}/${path.startsWith('/') ? path.substring(1) : path}`;
   };
 
   return (
@@ -353,10 +357,10 @@ const Home: React.FC = () => {
                     <Newspaper size={32} />
                  </div>
                  <div className="flex-1">
-                    <span className="text-[10px] font-bold text-comfort-gold uppercase tracking-widest block mb-2">{bulletin.date}</span>
+                    <span className="text-[10px] font-bold text-comfort-gold uppercase tracking-widest block mb-2">Officiel</span>
                     <h3 className="text-xl font-serif font-bold text-comfort-blue mb-4 leading-tight">{bulletin.title}</h3>
-                    <p className="text-sm text-gray-500 font-light leading-relaxed line-clamp-2 mb-6">{bulletin.summary}</p>
-                    <a href={bulletin.pdfLink} target="_blank" className="inline-flex items-center text-xs font-bold uppercase tracking-widest text-comfort-blue hover:text-comfort-gold transition-colors">
+                    <p className="text-sm text-gray-500 font-light leading-relaxed line-clamp-2 mb-6">{bulletin.resume}</p>
+                    <a href={getFullPdfUrl(bulletin.pdf_path)} target="_blank" className="inline-flex items-center text-xs font-bold uppercase tracking-widest text-comfort-blue hover:text-comfort-gold transition-colors">
                         Consulter le rapport <Download size={14} className="ml-3" />
                     </a>
                  </div>

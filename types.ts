@@ -27,9 +27,9 @@ export interface Bulletin {
   id: string;
   title: string;
   slug: string;
-  summary: string;
-  pdfLink: string;
-  date: string;
+  resume: string; // Changé de 'summary' pour correspondre au PHP
+  pdf_path: string; // Changé de 'pdfLink' pour correspondre au PHP
+  created_at?: string;
 }
 
 export interface SiteStats {

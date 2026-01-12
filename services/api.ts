@@ -1,3 +1,4 @@
+
 import { Project, BlogPost, Partner, TeamMember, Testimonial, SiteSettings, Bulletin, SiteStats } from '../types';
 
 export const API_BASE_URL = 'https://api.comfortasbl.org'; 
@@ -179,16 +180,8 @@ export const api = {
   },
 
   getBulletins: async (): Promise<Bulletin[]> => {
-    const bulletins = await fetchData<any[]>('bulletins.php');
-    if (!bulletins || !Array.isArray(bulletins)) return [];
-    return bulletins.map(b => ({
-      id: String(b.id),
-      title: b.title,
-      slug: b.slug,
-      summary: b.summary,
-      pdfLink: getAbsoluteUrl(b.pdf_link),
-      date: b.created_at?.split(' ')[0] || ''
-    }));
+    const res = await fetchData<Bulletin[]>('bulletins.php');
+    return res || [];
   },
 
   getPartners: async (): Promise<Partner[]> => {
@@ -230,10 +223,20 @@ export const api = {
   updatePartner: (id: string, data: any) => sendData(`partners.php?id=${id}`, 'PUT', data),
   createPartner: (data: any) => sendData('partners.php', 'POST', data),
 
-  // Bulletins & Testimonials
+  // Bulletins & Testimonials (Updated for the new endpoint)
   deleteBulletin: (id: string) => sendData(`bulletins.php?id=${id}`, 'DELETE'),
   updateBulletin: (id: string, data: any) => sendData(`bulletins.php?id=${id}`, 'PUT', data),
-  createBulletin: (data: any) => sendData('bulletins.php', 'POST', data),
+  createBulletin: async (formData: FormData) => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/bulletins.php`, {
+            method: 'POST',
+            body: formData
+        });
+        return await response.json();
+    } catch (e) {
+        return { success: false, error: "Erreur d'envoi du bulletin" };
+    }
+  },
 
   getTestimonials: () => fetchData<Testimonial[]>('testimonials.php').then(d => d || []),
   deleteTestimonial: (id: string) => sendData(`testimonials.php?id=${id}`, 'DELETE'),

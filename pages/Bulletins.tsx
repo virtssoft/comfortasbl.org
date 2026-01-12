@@ -3,10 +3,17 @@ import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { Download, Calendar, FileText, Newspaper } from 'lucide-react';
+import { API_BASE_URL } from '../services/api';
 
 const Bulletins: React.FC = () => {
   const { t } = useLanguage();
   const { bulletins, loading } = useData();
+
+  const getFullPdfUrl = (path: string) => {
+      if (!path) return '#';
+      if (path.startsWith('http')) return path;
+      return `${API_BASE_URL}/${path.startsWith('/') ? path.substring(1) : path}`;
+  };
 
   return (
     <div className="bg-white min-h-screen font-sans pb-32">
@@ -42,14 +49,14 @@ const Bulletins: React.FC = () => {
                     <div className="flex-1">
                        <div className="flex items-center space-x-4 mb-3">
                           <span className="text-[10px] font-bold text-comfort-gold uppercase tracking-widest">Officiel</span>
-                          <span className="text-[10px] text-gray-300 flex items-center"><Calendar size={12} className="mr-2" /> {bulletin.date}</span>
+                          <span className="text-[10px] text-gray-300 flex items-center"><Calendar size={12} className="mr-2" /> Bulletin COMFORT</span>
                        </div>
                        <h3 className="text-2xl font-serif font-bold text-comfort-blue mb-4 leading-tight">{bulletin.title}</h3>
                        <p className="text-gray-500 font-light text-sm mb-8 leading-relaxed italic line-clamp-2">
-                         "{bulletin.summary}"
+                         "{bulletin.resume}"
                        </p>
                        <a 
-                         href={bulletin.pdfLink} 
+                         href={getFullPdfUrl(bulletin.pdf_path)} 
                          target="_blank" 
                          rel="noopener noreferrer"
                          className="inline-flex items-center bg-comfort-blue text-white px-8 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-comfort-gold transition-all shadow-lg"
