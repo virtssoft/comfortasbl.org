@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Heart, Lock, CheckCircle, CreditCard, Phone, Smartphone, ShieldCheck } from 'lucide-react';
+import { Heart, Lock, CheckCircle, CreditCard, Phone, Smartphone, ShieldCheck, Copy, CheckCircle2 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { api } from '../services/api';
 
@@ -17,6 +16,7 @@ const Donate: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [copied, setCopied] = useState(false);
 
   const handleCustomChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCustomAmount(e.target.value);
@@ -24,6 +24,12 @@ const Donate: React.FC = () => {
   };
 
   const getFinalAmount = () => amount ? amount.toString() : customAmount;
+
+  const handleCopyAccount = () => {
+    navigator.clipboard.writeText('00017220062000003346537');
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
@@ -81,7 +87,7 @@ const Donate: React.FC = () => {
         ) : (
         <div className="grid lg:grid-cols-12 gap-20">
           
-          {/* FORMULAIRE EPAURE */}
+          {/* FORMULAIRE */}
           <div className="lg:col-span-7 bg-white">
             <h2 className="text-2xl font-serif font-bold text-comfort-blue mb-12 flex items-center">
               <span className="w-8 h-[1px] bg-comfort-gold mr-4"></span>
@@ -143,14 +149,60 @@ const Donate: React.FC = () => {
                     className="w-full bg-comfort-light border-b border-gray-200 p-5 outline-none focus:border-comfort-gold transition-all font-light resize-none" 
                 />
 
-                <select 
-                    value={method} onChange={(e) => setMethod(e.target.value)}
-                    className="w-full bg-comfort-light border-b border-gray-200 p-5 outline-none focus:border-comfort-gold transition-all font-bold text-sm uppercase tracking-widest bg-white"
-                >
-                    <option value="Carte">Virement / Carte Bancaire</option>
-                    <option value="Airtel Money">Airtel Money (Recommandé)</option>
-                    <option value="M-Pesa">M-Pesa</option>
-                </select>
+                <div className="space-y-4">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Méthode de paiement</label>
+                    <select 
+                        value={method} onChange={(e) => setMethod(e.target.value)}
+                        className="w-full bg-comfort-light border-b border-gray-200 p-5 outline-none focus:border-comfort-gold transition-all font-bold text-sm uppercase tracking-widest bg-white"
+                    >
+                        <option value="Carte">Virement / Carte Bancaire</option>
+                        <option value="Airtel Money">Airtel Money (Recommandé)</option>
+                        <option value="M-Pesa">M-Pesa</option>
+                    </select>
+
+                    {/* AFFICHAGE DYNAMIQUE DES COORDONNÉES TMB */}
+                    {method === 'Carte' && (
+                        <div className="mt-6 p-8 bg-gray-50 border border-dashed border-gray-300 rounded-sm animate-in fade-in slide-in-from-top-2 duration-500">
+                            <div className="flex justify-between items-start mb-6">
+                                <h4 className="text-[10px] font-bold text-comfort-blue uppercase tracking-[0.2em]">Détails du compte institutionnel</h4>
+                                <span className="text-[10px] bg-comfort-blue text-white px-2 py-1 font-bold">RDC - GOMA</span>
+                            </div>
+                            
+                            <div className="grid md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <p className="text-[9px] uppercase text-gray-400 font-bold mb-1">Intitulé de compte</p>
+                                    <p className="text-sm font-bold text-gray-800">COMFORT ASBL</p>
+                                </div>
+                                <div>
+                                    <p className="text-[9px] uppercase text-gray-400 font-bold mb-1">Banque</p>
+                                    <p className="text-sm font-bold text-gray-800">Trust Merchant Bank S.A. (TMB)</p>
+                                </div>
+                                <div>
+                                    <p className="text-[9px] uppercase text-gray-400 font-bold mb-1">Devise</p>
+                                    <p className="text-sm font-bold text-comfort-blue uppercase">USD</p>
+                                </div>
+                                <div>
+                                    <p className="text-[9px] uppercase text-gray-400 font-bold mb-1">Swift / BIC</p>
+                                    <p className="text-sm font-bold text-gray-800 tracking-widest">TRMSCD3L</p>
+                                </div>
+                            </div>
+
+                            <div className="pt-4 border-t border-gray-200">
+                                <p className="text-[9px] uppercase text-gray-400 font-bold mb-2">Numéro de compte</p>
+                                <div className="flex items-center justify-between bg-white p-4 border border-gray-200 rounded-sm">
+                                    <code className="text-xs font-mono font-bold text-comfort-blue tracking-tighter">00017220062000003346537</code>
+                                    <button 
+                                        type="button"
+                                        onClick={handleCopyAccount}
+                                        className="text-comfort-gold hover:scale-110 transition-transform"
+                                    >
+                                        {copied ? <CheckCircle2 size={18} className="text-green-500" /> : <Copy size={18} />}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
 
                 <button 
                     type="submit" disabled={loading}
@@ -178,10 +230,6 @@ const Donate: React.FC = () => {
                  <li className="flex items-start">
                    <span className="w-2 h-2 bg-comfort-gold rounded-full mt-1.5 mr-4 flex-shrink-0"></span>
                    Chaque don est suivi d'un rapport d'impact annuel détaillé.
-                 </li>
-                 <li className="flex items-start">
-                   <span className="w-2 h-2 bg-comfort-gold rounded-full mt-1.5 mr-4 flex-shrink-0"></span>
-                   Votre anonymat ou votre visibilité institutionnelle est respectée selon votre choix.
                  </li>
                </ul>
                <div className="mt-12 pt-12 border-t border-white/10">
