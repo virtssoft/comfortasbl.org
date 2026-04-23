@@ -112,98 +112,69 @@ const Home: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen bg-white font-sans overflow-x-hidden">
       
-      {/* 🏛️ HERO CAROUSEL */}
+{/* 🏛️ SECTION 1: HERO CAROUSEL */}
       <section className="relative h-[85vh] md:h-[90vh] bg-comfort-dark overflow-hidden">
-        {heroItems.length > 0 ? heroItems.map((post, idx) => (
+        {heroItems.map((post, idx) => (
           <div 
             key={post.id}
             className={`absolute inset-0 transition-opacity duration-[2000ms] ease-in-out ${idx === currentHero ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
           >
             <div className="absolute inset-0">
-               <img 
-                src={post.image} 
-                alt={post.title} 
-                className={`w-full h-full object-cover animate-ken-burns ${idx === currentHero ? '' : 'hidden'}`} 
-               />
-               <div className="absolute inset-0 bg-gradient-to-r from-comfort-dark/95 via-comfort-dark/70 to-comfort-dark/40"></div>
+               <img src={post.image} alt={post.title} className="w-full h-full object-cover animate-ken-burns" />
+               <div className="absolute inset-0 bg-gradient-to-r from-comfort-dark/95 via-comfort-dark/70 to-transparent"></div>
             </div>
-
             <div className="container relative z-20 mx-auto h-full flex items-center px-6 lg:px-12">
-              <div className="max-w-4xl animate-fade-in-up">
+              <div className="max-w-2xl animate-fade-in-up">
                 <div className="flex items-center space-x-3 mb-6">
                    <span className="h-[2px] w-12 bg-comfort-gold"></span>
                    <span className="text-comfort-gold font-bold tracking-[0.4em] uppercase text-xs">{post.category}</span>
                 </div>
-                <h1 className="text-4xl md:text-7xl font-serif font-bold text-white leading-tight mb-8 text-balance">
-                  {post.title}
-                </h1>
-                <p className="text-lg md:text-xl text-gray-300 mb-10 font-light leading-relaxed max-w-2xl border-l-2 border-white/20 pl-6 line-clamp-3">
-                  {post.excerpt}
-                </p>
-                <div className="flex flex-col sm:flex-row gap-6">
-                  <Link to={`/blog/${post.id}`} className="bg-comfort-gold text-white px-10 py-4 font-bold uppercase tracking-widest hover:bg-white hover:text-comfort-dark transition-all duration-500 shadow-2xl text-center text-xs">
-                    Découvrir l'histoire
-                  </Link>
-                  <Link to="/donate" className="border border-white/30 text-white px-10 py-4 font-bold uppercase tracking-widest hover:bg-white/10 transition-all backdrop-blur-sm text-center text-xs">
-                    Soutenir l'action
-                  </Link>
+                <h1 className="text-3xl md:text-5xl lg:text-6xl font-serif font-bold text-white mb-6 leading-tight">{post.title}</h1>
+                <p className="text-lg md:text-xl text-gray-300 mb-10 font-light border-l-2 border-white/20 pl-6 line-clamp-3">{post.excerpt}</p>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Link to={`/blog/${post.id}`} className="bg-comfort-gold text-white px-10 py-4 font-bold uppercase tracking-widest hover:bg-white hover:text-comfort-dark transition-all text-center text-xs">Découvrir l'histoire</Link>
+                  <Link to="/donate" className="border border-white/30 text-white px-10 py-4 font-bold uppercase tracking-widest hover:bg-white/10 transition-all text-center text-xs">Soutenir l'action</Link>
                 </div>
               </div>
             </div>
           </div>
-        )) : null}
-
+        ))}
         <div className="absolute bottom-12 right-12 z-30 flex items-center space-x-6">
-           <button onClick={prevHero} className="text-white/50 hover:text-white border border-white/20 p-4 rounded-full transition-all">
-             <ChevronLeft size={24} />
-           </button>
-           <button onClick={nextHero} className="text-white/50 hover:text-white border border-white/20 p-4 rounded-full transition-all">
-             <ChevronRight size={24} />
-           </button>
+            <button onClick={prevHero} className="text-white/50 hover:text-white border border-white/20 p-4 rounded-full transition-colors"><ChevronLeft size={24} /></button>
+            <button onClick={nextHero} className="text-white/50 hover:text-white border border-white/20 p-4 rounded-full transition-colors"><ChevronRight size={24} /></button>
         </div>
       </section>
 
-      {/* 🏛️ MISSION */}
-      <section className="py-32 bg-white relative">
+      {/* 🏛️ SECTION 2: MISSION & STATS */}
+      <section className="py-24 bg-white relative">
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-24 items-center">
             <div className="relative">
-              <p className="text-comfort-gold font-bold uppercase tracking-[0.4em] mb-4 text-xs">
-                {t('about_section.tag')}
-              </p>
-              <h2 className="text-4xl md:text-6xl font-serif font-bold text-comfort-blue mb-10 leading-tight">
+              <p className="text-comfort-gold font-bold uppercase tracking-[0.4em] mb-4 text-xs">{t('about_section.tag')}</p>
+              <h2 className="text-4xl md:text-6xl font-serif font-bold text-comfort-blue mb-8 leading-tight">
                 L'intégrité au service de <span className="italic font-light">l'humanité</span>.
               </h2>
               <p className="text-xl text-gray-600 font-light leading-relaxed mb-12">
-                COMFORT Asbl bâtit des ponts entre l'urgence humanitaire et le développement durable en RDC. Notre transparence est le socle de notre engagement institutionnel au service des plus démunis.
+                COMFORT Asbl agit pour l'autonomisation des communautés en RDC, bâtissant des ponts durables entre l'urgence et le développement.
               </p>
-              <div className="flex items-center space-x-8">
-                 <div className="flex flex-col">
-                    <span className="text-comfort-blue font-serif font-bold text-4xl mb-1">20+</span>
-                    <span className="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Ans de résilience</span>
-                 </div>
-                 <div className="h-10 w-[1px] bg-gray-100"></div>
-                 <div className="flex flex-col">
-                    <span className="text-comfort-blue font-serif font-bold text-4xl mb-1">500k</span>
-                    <span className="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Vies Impactées</span>
-                 </div>
-              </div>
+              <Link to="/about" className="inline-flex items-center text-comfort-blue font-bold uppercase tracking-widest group text-sm">
+                Notre charte institutionnelle <ArrowRight className="ml-4 group-hover:translate-x-3 transition-transform text-comfort-gold" />
+              </Link>
             </div>
-            
-            <div className="grid grid-cols-2 gap-6 relative">
+            <div className="grid grid-cols-2 gap-6">
                <div className="space-y-6 pt-12">
-                  <div className="aspect-[3/4] rounded-sm overflow-hidden shadow-2xl">
-                    <img src="https://api.comfortasbl.org/assets/images/about-who.jpg" className="w-full h-full object-cover" alt="Mission" />
+                  <img src="https://api.comfortasbl.org/assets/images/about-who.jpg" className="aspect-[3/4] object-cover rounded-sm shadow-2xl" alt="Mission" />
+                  <div className="p-8 bg-comfort-blue text-white rounded-sm shadow-xl">
+                    <h4 className="text-5xl font-serif font-bold mb-2">{projects.length}+</h4>
+                    <p className="text-[10px] uppercase tracking-widest font-bold opacity-80">Programmes</p>
                   </div>
                </div>
                <div className="space-y-6">
                   <div className="p-8 bg-comfort-gold text-white rounded-sm shadow-xl">
-                    <h4 className="text-5xl font-serif font-bold mb-2">Impact</h4>
-                    <p className="text-[10px] uppercase tracking-widest font-bold opacity-80">Au cœur du terrain</p>
+                    <h4 className="text-5xl font-serif font-bold mb-2">{yearsOfExistence}</h4>
+                    <p className="text-[10px] uppercase tracking-widest font-bold opacity-80">Années d'impact</p>
                   </div>
-                  <div className="aspect-[3/4] rounded-sm overflow-hidden shadow-2xl">
-                    <img src="https://api.comfortasbl.org/assets/images/about-hero.jpg" className="w-full h-full object-cover" alt="Impact" />
-                  </div>
+                  <img src="https://api.comfortasbl.org/assets/images/about-hero.jpg" className="aspect-[3/4] object-cover rounded-sm shadow-2xl" alt="Vision" />
                </div>
             </div>
           </div>
