@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { 
   ArrowRight, Heart, BookOpen, HandCoins, Wheat, Palette, 
   ChevronLeft, ChevronRight, Calendar, User, MapPin, Mail, 
-  Phone, Clock, Facebook, Copy, CheckCircle2, Quote, Newspaper, Download 
+  Phone, Clock, Facebook, Copy, CheckCircle2 
 } from 'lucide-react';
 import { DOMAINS, CONTACT_INFO } from './constants';
 import { useLanguage } from '../context/LanguageContext';
@@ -12,10 +12,9 @@ import { HeroSkeleton, CardSkeleton } from '../components/Skeletons';
 
 const Home: React.FC = () => {
   const { t } = useLanguage();
-  const { projects, partners, blogPosts, testimonials, bulletins, loading } = useData();
+  const { projects, partners, blogPosts, loading } = useData();
   
   const [currentHero, setCurrentHero] = useState(0);
-  const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [copied, setCopied] = useState(false);
 
   // Fallbacks de contact
@@ -207,9 +206,8 @@ const Home: React.FC = () => {
           </div>
         </section>
       )}
-
-      {/* 🏛️ SECTION 5: TÉMOIGNAGES */}
-      {testimonials && testimonials.length > 0 && (
+  {/* 🏛️ SECTION 4: TÉMOIGNAGES (SÉCURISÉE) */}
+      {testimonials.length > 0 && (
         <section className="py-24 bg-white">
           <div className="container mx-auto px-6 max-w-5xl">
             <div className="bg-comfort-light p-12 relative border border-gray-50 rounded-sm">
@@ -228,18 +226,18 @@ const Home: React.FC = () => {
         </section>
       )}
 
-      {/* 🏛️ SECTION 6: GAZETTE & BULLETINS */}
-      {bulletins && bulletins.length > 0 && (
+      {/* 🏛️ SECTION 5: GAZETTE & BULLETINS */}
+      {bulletins.length > 0 && (
         <section className="py-24 bg-gray-50">
           <div className="container mx-auto px-6">
             <h2 className="text-3xl font-serif font-bold text-comfort-blue mb-12">Gazettes & Rapports</h2>
             <div className="grid md:grid-cols-2 gap-8">
               {bulletins.slice(0, 2).map((bulletin) => (
-                <div key={bulletin.id} className="bg-white p-8 border border-gray-100 flex items-center gap-6 shadow-sm hover:shadow-md transition-shadow">
+                <div key={bulletin.id} className="bg-white p-8 border border-gray-100 flex items-center gap-6">
                    <Newspaper className="text-comfort-gold" size={32} />
                    <div className="flex-1">
                       <h3 className="font-bold text-comfort-blue mb-2">{bulletin.title}</h3>
-                      <a href={bulletin.pdf_path} target="_blank" rel="noreferrer" className="text-xs font-bold text-comfort-gold uppercase flex items-center hover:underline">
+                      <a href={bulletin.pdf_path} target="_blank" rel="noreferrer" className="text-xs font-bold text-comfort-gold uppercase flex items-center">
                         Télécharger <Download size={14} className="ml-2" />
                       </a>
                    </div>
@@ -249,8 +247,7 @@ const Home: React.FC = () => {
           </div>
         </section>
       )}
-
-      {/* ⬛ SECTION 7: PARTENAIRES (MARQUEE) */}
+      {/* ⬛ SECTION 5: PARTENAIRES (MARQUEE) */}
       <section className="py-16 bg-white border-t border-gray-100 overflow-hidden relative">
          <div className="container mx-auto px-4 mb-8 text-center">
              <h3 className="text-xs font-serif font-bold text-gray-400 uppercase tracking-[0.5em]">{t('partners.title')}</h3>
@@ -265,7 +262,7 @@ const Home: React.FC = () => {
          <style>{`@keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } } .animate-marquee { animation: marquee 30s linear infinite; }`}</style>
       </section>
 
-      {/* 🟩 SECTION 8: CTA PREMIUM */}
+      {/* 🟩 SECTION 6: CTA PREMIUM */}
       <section className="py-32 relative flex items-center justify-center text-center">
          <img src="https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?q=80&w=2070&auto=format&fit=crop" alt="CTA" className="absolute inset-0 w-full h-full object-cover" />
          <div className="absolute inset-0 bg-comfort-blue/85 mix-blend-multiply"></div>
@@ -277,7 +274,7 @@ const Home: React.FC = () => {
          </div>
       </section>
 
-      {/* 🟦 SECTION 9: CONTACT & BANQUE */}
+      {/* 🟦 SECTION 7: CONTACT & BANQUE */}
       <section className="py-24 bg-white" id="contact-section">
         <div className="container mx-auto px-6">
            <div className="grid lg:grid-cols-2 gap-20">
@@ -308,7 +305,7 @@ const Home: React.FC = () => {
                     </div>
                  </div>
                  <div className="mt-12 h-64 bg-gray-50 rounded-sm overflow-hidden border border-gray-100">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127606.37648356942!2d29.155452243359374!3d-1.6585141999999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19dd0f63884e9d57%3A0x6b44f0b2f5997637!2sGoma!5e0!3m2!1sfr!2scd!4v1713870000000!5m2!1sfr!2scd" width="100%" height="100%" style={{ border: 0 }} allowFullScreen title="Map" loading="lazy"></iframe>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127641.51705646199!2d29.15545293674683!3d-1.658604928230554!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19dd0f339890a8fb%3A0x633513364f9c636f!2sGoma!5e0!3m2!1sfr!2scd!4v1700000000000" width="100%" height="100%" style={{ border: 0 }} allowFullScreen title="Map" loading="lazy"></iframe>
                  </div>
               </div>
 
