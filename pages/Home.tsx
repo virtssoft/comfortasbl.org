@@ -4,7 +4,7 @@ import {
   ArrowRight, Heart, BookOpen, HandCoins, Wheat, Palette, 
   ChevronLeft, ChevronRight, Calendar, User, MapPin, Mail, 
   Phone, Clock, Facebook, Copy, CheckCircle2, 
-  Quote, Newspaper, Download // Ajoutés car présents dans ton return
+  Quote, Newspaper, Download 
 } from 'lucide-react';
 import { DOMAINS, CONTACT_INFO } from './constants';
 import { useLanguage } from '../context/LanguageContext';
@@ -111,8 +111,8 @@ return (
                 <h1 className="text-3xl md:text-5xl lg:text-6xl font-serif font-bold text-white mb-6 leading-tight">{post.title}</h1>
                 <p className="text-lg md:text-xl text-gray-300 mb-10 font-light border-l-2 border-white/20 pl-6 line-clamp-3">{post.excerpt}</p>
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Link to={`/blog/${post.id}`} className="bg-comfort-gold text-white px-10 py-4 font-bold uppercase tracking-widest hover:bg-white hover:text-comfort-dark transition-all text-center text-xs">Découvrir l'histoire</Link>
-                  <Link to="/donate" className="border border-white/30 text-white px-10 py-4 font-bold uppercase tracking-widest hover:bg-white/10 transition-all text-center text-xs">Soutenir l'action</Link>
+                  <Link to={`/blog/${post.id}`} className="bg-comfort-gold text-white px-10 py-4 font-bold uppercase tracking-widest hover:bg-white hover:text-comfort-dark transition-all text-center text-xs">{t('common.more')}</Link>
+                  <Link to="/donate" className="border border-white/30 text-white px-10 py-4 font-bold uppercase tracking-widest hover:bg-white/10 transition-all text-center text-xs">{t('nav.donate')}</Link>
                 </div>
               </div>
             </div>
@@ -134,10 +134,10 @@ return (
                 L'intégrité au service de <span className="italic font-light">l'humanité</span>.
               </h2>
               <p className="text-xl text-gray-600 font-light leading-relaxed mb-12">
-                COMFORT Asbl agit pour l'autonomisation des communautés en RDC, bâtissant des ponts durables entre l'urgence et le développement.
+                {t('about_page.who_text')}
               </p>
               <Link to="/about" className="inline-flex items-center text-comfort-blue font-bold uppercase tracking-widest group text-sm">
-                Notre charte institutionnelle <ArrowRight className="ml-4 group-hover:translate-x-3 transition-transform text-comfort-gold" />
+                {t('footer.history')} <ArrowRight className="ml-4 group-hover:translate-x-3 transition-transform text-comfort-gold" />
               </Link>
             </div>
             <div className="grid grid-cols-2 gap-6">
@@ -163,11 +163,11 @@ return (
       {/* 🏛️ SECTION 3: DOMAINES D'INTERVENTION */}
       <section className="py-24 bg-comfort-light border-y border-gray-100">
         <div className="container mx-auto px-6">
-           <div className="max-w-2xl mb-16">
-              <h2 className="text-4xl font-serif font-bold text-comfort-blue mb-6">Piliers d'Intervention</h2>
-              <p className="text-gray-500 font-light text-lg">Une méthodologie rigoureuse au service des besoins les plus critiques.</p>
-           </div>
-           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 border border-gray-100 shadow-sm">
+            <div className="max-w-2xl mb-16">
+              <h2 className="text-4xl font-serif font-bold text-comfort-blue mb-6">{t('nav.domains')}</h2>
+              <p className="text-gray-500 font-light text-lg">{t('about_page.objectives_intro')}</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 border border-gray-100 shadow-sm">
               {DOMAINS.map((domain) => (
                 <div key={domain.id} className="group p-10 bg-white border-r border-b border-gray-100 hover:bg-comfort-blue transition-all duration-700 relative overflow-hidden">
                    <div className="absolute top-0 left-0 w-1 h-0 bg-comfort-gold group-hover:h-full transition-all duration-700"></div>
@@ -176,7 +176,7 @@ return (
                    <p className="text-xs text-gray-400 group-hover:text-gray-300 font-light leading-relaxed">{t(`domains.${domain.id}.desc`)}</p>
                 </div>
               ))}
-           </div>
+            </div>
         </div>
       </section>
 
@@ -186,11 +186,11 @@ return (
           <div className="container mx-auto px-6">
               <div className="flex flex-col md:flex-row justify-between items-end mb-12">
                   <div>
-                      <h2 className="text-3xl font-serif font-bold text-comfort-blue mb-4">{t('news.title')}</h2>
-                      <p className="text-gray-600">{t('news.subtitle')}</p>
+                      <h2 className="text-3xl font-serif font-bold text-comfort-blue mb-4">{t('blog_page.title')}</h2>
+                      <p className="text-gray-600">{t('blog_page.subtitle')}</p>
                   </div>
                   <Link to="/blog" className="text-comfort-blue font-bold tracking-wide uppercase hover:underline flex items-center mt-4 md:mt-0">
-                      {t('news.all')} <ArrowRight size={16} className="ml-2" />
+                      {t('nav.blog')} <ArrowRight size={16} className="ml-2" />
                   </Link>
               </div>
               <div className="grid md:grid-cols-3 gap-8">
@@ -210,7 +210,7 @@ return (
                               </h3>
                               <p className="text-gray-600 text-sm mb-4 line-clamp-2">{post.excerpt}</p>
                               <Link to={`/blog/${post.id}`} className="text-comfort-blue font-bold text-xs uppercase flex items-center hover:underline">
-                                  {t('news.read')} <ArrowRight size={14} className="ml-2" />
+                                  {t('common.more')} <ArrowRight size={14} className="ml-2" />
                               </Link>
                           </div>
                       </div>
@@ -219,10 +219,12 @@ return (
           </div>
         </section>
       )}
-  {/* 🏛️ SECTION 4: TÉMOIGNAGES (SÉCURISÉE) */}
+
+      {/* 🏛️ SECTION 4: TÉMOIGNAGES */}
       {testimonials.length > 0 && (
         <section className="py-24 bg-white">
           <div className="container mx-auto px-6 max-w-5xl">
+            <h2 className="text-center text-3xl font-serif font-bold text-comfort-blue mb-12">{t('home.testimonials_title')}</h2>
             <div className="bg-comfort-light p-12 relative border border-gray-50 rounded-sm">
                <Quote size={60} className="absolute top-10 right-10 text-comfort-gold opacity-10" />
                <p className="text-2xl font-serif italic text-comfort-blue mb-12">"{testimonials[currentTestimonial].message}"</p>
@@ -243,7 +245,8 @@ return (
       {bulletins.length > 0 && (
         <section className="py-24 bg-gray-50">
           <div className="container mx-auto px-6">
-            <h2 className="text-3xl font-serif font-bold text-comfort-blue mb-12">Gazettes & Rapports</h2>
+            <h2 className="text-3xl font-serif font-bold text-comfort-blue mb-4">{t('home.newsletter_title')}</h2>
+            <p className="text-gray-600 mb-12">{t('home.newsletter_subtitle')}</p>
             <div className="grid md:grid-cols-2 gap-8">
               {bulletins.slice(0, 2).map((bulletin) => (
                 <div key={bulletin.id} className="bg-white p-8 border border-gray-100 flex items-center gap-6">
@@ -251,7 +254,7 @@ return (
                    <div className="flex-1">
                       <h3 className="font-bold text-comfort-blue mb-2">{bulletin.title}</h3>
                       <a href={bulletin.pdf_path} target="_blank" rel="noreferrer" className="text-xs font-bold text-comfort-gold uppercase flex items-center">
-                        Télécharger <Download size={14} className="ml-2" />
+                        {t('common.download')} <Download size={14} className="ml-2" />
                       </a>
                    </div>
                 </div>
@@ -260,10 +263,11 @@ return (
           </div>
         </section>
       )}
-      {/* ⬛ SECTION 5: PARTENAIRES (MARQUEE) */}
+
+      {/* ⬛ SECTION 5: PARTENAIRES */}
       <section className="py-16 bg-white border-t border-gray-100 overflow-hidden relative">
          <div className="container mx-auto px-4 mb-8 text-center">
-             <h3 className="text-xs font-serif font-bold text-gray-400 uppercase tracking-[0.5em]">{t('partners.title')}</h3>
+             <h3 className="text-xs font-serif font-bold text-gray-400 uppercase tracking-[0.5em]">{t('nav.partners')}</h3>
          </div>
          <div className="flex w-max animate-marquee items-center py-4">
             {[...partners, ...partners].map((p, idx) => (
@@ -280,9 +284,9 @@ return (
          <img src="https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?q=80&w=2070&auto=format&fit=crop" alt="CTA" className="absolute inset-0 w-full h-full object-cover" />
          <div className="absolute inset-0 bg-comfort-blue/85 mix-blend-multiply"></div>
          <div className="container relative z-10 px-4 text-white">
-            <h2 className="text-4xl md:text-6xl font-serif font-bold mb-10 leading-tight">{t('cta.title')}</h2>
+            <h2 className="text-4xl md:text-6xl font-serif font-bold mb-10 leading-tight">{t('about_page.mission_title')}</h2>
             <Link to="/donate" className="inline-block bg-white text-comfort-blue px-12 py-5 rounded-sm text-sm font-bold uppercase tracking-[0.2em] hover:bg-comfort-gold hover:text-white transition-all shadow-2xl">
-              {t('cta.button')}
+              {t('nav.donate')}
             </Link>
          </div>
       </section>
@@ -293,7 +297,7 @@ return (
            <div className="grid lg:grid-cols-2 gap-20">
               <div>
                  <h2 className="text-3xl font-serif font-bold text-comfort-blue mb-6">{t('contact.title')}</h2>
-                 <p className="text-gray-600 mb-10 text-lg leading-relaxed">{t('contact.desc')}</p>
+                 <p className="text-gray-600 mb-10 text-lg leading-relaxed">{t('contact.subtitle')}</p>
                  <div className="space-y-8">
                     <div className="flex items-start">
                        <MapPin className="text-comfort-gold mt-1 mr-6" size={24} />
@@ -317,17 +321,13 @@ return (
                        </div>
                     </div>
                  </div>
-                 <div className="mt-12 h-64 bg-gray-50 rounded-sm overflow-hidden border border-gray-100">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127641.51705646199!2d29.15545293674683!3d-1.658604928230554!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19dd0f339890a8fb%3A0x633513364f9c636f!2sGoma!5e0!3m2!1sfr!2scd!4v1700000000000" width="100%" height="100%" style={{ border: 0 }} allowFullScreen title="Map" loading="lazy"></iframe>
-                 </div>
               </div>
 
               <div className="bg-gray-50 p-10 md:p-14 rounded-sm border border-gray-100 shadow-sm">
                   <h3 className="text-2xl font-bold mb-6 text-gray-900">Contact Direct</h3>
-                  <p className="text-gray-600 mb-10">Garantir une réponse rapide et humaine sans intermédiaires.</p>
                   <div className="space-y-4 mb-12">
-                      <a href={`mailto:${contactEmail}`} className="flex items-center justify-center w-full bg-comfort-blue text-white font-bold py-4 rounded-sm uppercase text-xs tracking-widest hover:bg-comfort-dark transition-colors"><Mail className="mr-3" size={18} /> Envoyer un Email</a>
-                      <a href={`tel:${contactPhone}`} className="flex items-center justify-center w-full bg-white text-comfort-blue border-2 border-comfort-blue font-bold py-4 rounded-sm uppercase text-xs tracking-widest hover:bg-blue-50 transition-colors"><Phone className="mr-3" size={18} /> Appeler maintenant</a>
+                      <a href={`mailto:${contactEmail}`} className="flex items-center justify-center w-full bg-comfort-blue text-white font-bold py-4 rounded-sm uppercase text-xs tracking-widest hover:bg-comfort-dark transition-colors"><Mail className="mr-3" size={18} /> {t('contact.send')}</a>
+                      <a href={`tel:${contactPhone}`} className="flex items-center justify-center w-full bg-white text-comfort-blue border-2 border-comfort-blue font-bold py-4 rounded-sm uppercase text-xs tracking-widest hover:bg-blue-50 transition-colors"><Phone className="mr-3" size={18} /> {t('contact.phone')}</a>
                   </div>
 
                   {/* BANQUE SECTION */}
@@ -353,10 +353,6 @@ return (
                                   </button>
                               </div>
                           </div>
-                          <div className="flex justify-between items-center text-[10px] pt-2">
-                              <span className="font-bold text-gray-400 uppercase tracking-widest">SWIFT: <span className="text-gray-800">TRMSCD3L</span></span>
-                              <span className="bg-comfort-gold/10 text-comfort-gold px-2 py-0.5 rounded font-bold">DRC - GOMA</span>
-                          </div>
                       </div>
                   </div>
 
@@ -373,4 +369,3 @@ return (
 };
 
 export default Home;
-
