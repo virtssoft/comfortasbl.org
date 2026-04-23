@@ -88,7 +88,7 @@ const Home: React.FC = () => {
     }
   };
 
-  return (
+return (
     <div className="flex flex-col min-h-screen bg-white font-sans overflow-x-hidden">
       
       {/* 🏛️ SECTION 1: HERO CAROUSEL */}
@@ -219,8 +219,7 @@ const Home: React.FC = () => {
           </div>
         </section>
       )}
-
-      {/* 🏛️ SECTION 4: TÉMOIGNAGES (SÉCURISÉE) */}
+  {/* 🏛️ SECTION 4: TÉMOIGNAGES (SÉCURISÉE) */}
       {testimonials.length > 0 && (
         <section className="py-24 bg-white">
           <div className="container mx-auto px-6 max-w-5xl">
@@ -261,7 +260,6 @@ const Home: React.FC = () => {
           </div>
         </section>
       )}
-
       {/* ⬛ SECTION 5: PARTENAIRES (MARQUEE) */}
       <section className="py-16 bg-white border-t border-gray-100 overflow-hidden relative">
          <div className="container mx-auto px-4 mb-8 text-center">
@@ -320,7 +318,7 @@ const Home: React.FC = () => {
                     </div>
                  </div>
                  <div className="mt-12 h-64 bg-gray-50 rounded-sm overflow-hidden border border-gray-100">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.1!2d29.2!3d-1.6!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMcKwMzYnMDAuMCJTIDI5wrAxMicwMC4wIkU!5e0!3m2!1sfr!2scd!4v1" width="100%" height="100%" style={{ border: 0 }} allowFullScreen title="Map" loading="lazy"></iframe>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127641.51705646199!2d29.15545293674683!3d-1.658604928230554!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19dd0f339890a8fb%3A0x633513364f9c636f!2sGoma!5e0!3m2!1sfr!2scd!4v1700000000000" width="100%" height="100%" style={{ border: 0 }} allowFullScreen title="Map" loading="lazy"></iframe>
                  </div>
               </div>
 
@@ -375,3 +373,4 @@ const Home: React.FC = () => {
 };
 
 export default Home;
+
