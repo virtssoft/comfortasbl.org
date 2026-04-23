@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   ArrowRight, Heart, BookOpen, HandCoins, Wheat, Palette, 
   ChevronLeft, ChevronRight, Calendar, User, MapPin, Mail, 
-  Phone, Clock, Facebook, Copy, CheckCircle2 
+  Phone, Clock, Facebook, Copy, CheckCircle2, 
+  Quote, Newspaper, Download // Ajoutés car présents dans ton return
 } from 'lucide-react';
 import { DOMAINS, CONTACT_INFO } from './constants';
 import { useLanguage } from '../context/LanguageContext';
@@ -12,9 +13,10 @@ import { HeroSkeleton, CardSkeleton } from '../components/Skeletons';
 
 const Home: React.FC = () => {
   const { t } = useLanguage();
-  const { projects, partners, blogPosts, loading } = useData();
+  const { projects, partners, blogPosts, testimonials, bulletins, loading } = useData();
   
   const [currentHero, setCurrentHero] = useState(0);
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [copied, setCopied] = useState(false);
 
   // Fallbacks de contact
@@ -22,7 +24,8 @@ const Home: React.FC = () => {
   const contactEmail = CONTACT_INFO?.email || "contact@comfortasbl.org";
   const contactPhone = CONTACT_INFO?.phone || "+243 000 000 000";
 
-  const heroItems = blogPosts.slice(0, 5);
+  // Mémorisation des items pour éviter les changements de référence
+  const heroItems = useMemo(() => blogPosts.slice(0, 5), [blogPosts]);
   const yearsOfExistence = new Date().getFullYear() - 2019;
 
   const nextHero = useCallback(() => {
@@ -34,6 +37,16 @@ const Home: React.FC = () => {
     if (heroItems.length === 0) return;
     setCurrentHero(prev => (prev - 1 + heroItems.length) % heroItems.length);
   }, [heroItems.length]);
+
+  // Rotation automatique des témoignages
+  useEffect(() => {
+    if (testimonials.length > 1) {
+      const timer = setInterval(() => {
+        setCurrentTestimonial(prev => (prev + 1) % testimonials.length);
+      }, 8000);
+      return () => clearInterval(timer);
+    }
+  }, [testimonials.length]);
 
   const handleCopyAccount = () => {
     navigator.clipboard.writeText('00017220062000003346537');
@@ -74,7 +87,7 @@ const Home: React.FC = () => {
       default: return <Heart {...props} />;
     }
   };
-  
+
   return (
     <div className="flex flex-col min-h-screen bg-white font-sans overflow-x-hidden">
       
@@ -206,7 +219,8 @@ const Home: React.FC = () => {
           </div>
         </section>
       )}
-  {/* 🏛️ SECTION 4: TÉMOIGNAGES (SÉCURISÉE) */}
+
+      {/* 🏛️ SECTION 4: TÉMOIGNAGES (SÉCURISÉE) */}
       {testimonials.length > 0 && (
         <section className="py-24 bg-white">
           <div className="container mx-auto px-6 max-w-5xl">
@@ -247,6 +261,7 @@ const Home: React.FC = () => {
           </div>
         </section>
       )}
+
       {/* ⬛ SECTION 5: PARTENAIRES (MARQUEE) */}
       <section className="py-16 bg-white border-t border-gray-100 overflow-hidden relative">
          <div className="container mx-auto px-4 mb-8 text-center">
@@ -305,7 +320,7 @@ const Home: React.FC = () => {
                     </div>
                  </div>
                  <div className="mt-12 h-64 bg-gray-50 rounded-sm overflow-hidden border border-gray-100">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127641.51705646199!2d29.15545293674683!3d-1.658604928230554!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19dd0f339890a8fb%3A0x633513364f9c636f!2sGoma!5e0!3m2!1sfr!2scd!4v1700000000000" width="100%" height="100%" style={{ border: 0 }} allowFullScreen title="Map" loading="lazy"></iframe>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.1!2d29.2!3d-1.6!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMcKwMzYnMDAuMCJTIDI5wrAxMicwMC4wIkU!5e0!3m2!1sfr!2scd!4v1" width="100%" height="100%" style={{ border: 0 }} allowFullScreen title="Map" loading="lazy"></iframe>
                  </div>
               </div>
 
