@@ -30,24 +30,12 @@ export const translations = {
       mission_tag: 'NOTRE MISSION INSTITUTIONNELLE',
       mission_slogan: "L'intégrité au service de l'humanité.",
       mission_description: "COMFORT Asbl est une organisation sans but lucratif dédiée à la transformation sociale en République Démocratique du Congo.",
-      newsletter_title: 'Bulletin d\'information',
-      newsletter_subtitle: 'Restez informé des dernières décisions institutionnelles et rapports d\'impact.',
-      testimonials_title: 'Récits de Vie & Témoignages',
-      testimonials_subtitle: 'Découvrez l\'impact de nos actions à travers les voix de ceux qui font COMFORT.',
-      testimonial_form_title: 'Partagez votre expérience',
-      testimonial_role_placeholder: 'Votre rôle (ex: Bénévole)',
-      testimonial_org_placeholder: 'Organisation (optionnel)',
-      testimonial_phone_label: 'Téléphone',
-      stats_members: 'Membres actifs',
-      stats_volunteers: 'Bénévoles engagés'
-    },
-    about_section: {
-      tag: 'NOTRE MISSION INSTITUTIONNELLE',
-      stats_title: 'Analytique du Portail en Temps Réel',
-      visitors: 'Visiteurs uniques',
-      page_views: 'Pages consultées',
-      readers: 'Lecteurs engagés',
-      most_visited: 'Page la plus consultée'
+      newsletter_title: "Bulletin d'information",
+      newsletter_subtitle: "Restez informé des dernières décisions institutionnelles et rapports d'impact.",
+      testimonials_title: "Récits de Vie & Témoignages",
+      testimonials_subtitle: "Découvrez l'impact de nos actions à travers les voix de ceux qui font COMFORT.",
+      stats_members: "Membres actifs",
+      stats_volunteers: "Bénévoles engagés"
     },
     about_page: {
       hero_title: 'Notre Histoire & Nos Valeurs',
@@ -57,6 +45,10 @@ export const translations = {
       vision_text: 'Apporter un soutien holistique et durable aux populations les plus vulnérables en répondant à leur besoin prioritaire tout en favorisant leur autonomisation et développement inclusif et durable à long terme, afin de construire des communautés résilientes.',
       mission_title: 'Notre Mission',
       mission_text: 'Accompagner les populations vulnérables par des actions concrètes en santé, éducation et autonomisation économique pour restaurer la dignité humaine.',
+      identity_title: "Notre Identité",
+      identity_slogan: '"Agir avec intégrité pour chaque vie impactée."',
+      contact_prompt: "Nous sommes à votre écoute.",
+      contact_cta: "Initier une conversation",
       objectives_title: 'Nos Objectifs Stratégiques',
       objectives_intro: 'Notre action s\'articule autour de quatre axes majeurs pour garantir un impact systémique.',
       obj_1_title: 'Protection',
@@ -67,31 +59,56 @@ export const translations = {
       obj_3_text: 'Favoriser l\'entrepreneuriat et le micro-crédit pour les familles.',
       obj_4_title: 'Éducation',
       obj_4_text: 'Garantir un futur aux enfants par un accès universel au savoir.',
-      team_title: 'Notre Gouvernance',
-      team_desc: 'Un conseil d\'administration engagé et pluridisciplinaire.'
+    },
+    projects: {
+      archive_title: "Archive des Actions",
+      archive_subtitle: "Nos Engagements & Impact Réel",
+      archive_description: "Consultez nos rapports d'intervention classés par catégorie. Chaque projet est une promesse tenue envers les communautés vulnérables.",
+      view_details: 'Voir les détails'
+    },
+    bulletin: {
+      official_comm: "Communication Officielle",
+      title_part1: "Le Bulletin",
+      title_part2: "d'Information",
+      description: "Archives institutionnelles de COMFORT Asbl. Retrouvez ici tous nos rapports d'impact et décisions stratégiques au format PDF.",
+    },
+    account: {
+      member_access: "Accès Membre",
+      login: "Se Connecter",
+      create_profile: "Créer un profil institutionnel",
+    },
+    donate: {
+      tag: "Acte de Solidarité",
+      title: "Make a Donation",
+      quote: '"Soutenir COMFORT, c\'est investir dans la dignité de ceux qui n\'ont que leur résilience pour avancer."',
+      choose_amount: "Choisissez un montant",
+      your_details: "Vos Coordonnées",
+      payment_method: "Méthode de paiement",
+      method_card: "Virement / Carte Bancaire",
+      method_airtel: "Airtel Money (Recommandé)",
+      method_mpesa: "M-Pesa",
+      bank_details_title: "Détails du compte institutionnel",
+      location: "RDC - GOMA",
+      acc_name_label: "Intitulé de compte",
+      bank_label: "Banque",
+      currency_label: "Devise",
+      swift_label: "Swift / BIC",
+      acc_num_label: "Numéro de compte",
+      confirm_btn: "Confirmer l'acte de don",
+      security_protocol: "Protocole de sécurité institutionnel actif",
+      transparency_title: "Transparence & Garantie",
+      guarantee_1: "100% de votre contribution est allouée aux programmes de terrain.",
+      guarantee_2: "Chaque don est suivi d'un rapport d'impact annuel détaillé.",
+      support_title: "Assistance Donateur",
     },
     bank: {
       title: 'Coordonnées Bancaires',
       account_name_label: 'Intitulé',
       account_name: 'COMFORT ASBL',
       bank_name_label: 'Banque',
-      bank_name: 'TMB S.A.',
+      bank_name: 'Trust Merchant Bank S.A. (TMB)',
       account_number_label: 'Numéro de compte (USD)',
-      account_number: '1234-5678901-23' 
-    },
-    join_section: {
-      title: 'Devenir Membre',
-      subtitle: 'Rejoignez une communauté d\'action dédiée au changement positif en RDC.',
-      success: 'Votre demande a été transmise avec succès à notre conseil d\'administration.',
-      name: 'Nom Complet',
-      email: 'Adresse Email',
-      type: 'Type de Membre',
-      type_placeholder: 'Sélectionnez un type',
-      member_adh: 'Membre Adhérent',
-      member_sym: 'Membre Sympathisant',
-      member_hon: 'Membre d\'Honneur',
-      message: 'Votre Motivation',
-      submit: 'Envoyer ma demande'
+      account_number: '00017220062000003346537'
     },
     domains: {
       health: { title: 'Santé & Eau', desc: 'Accès aux soins primaires et adduction d\'eau potable.' },
@@ -100,57 +117,13 @@ export const translations = {
       food: { title: 'Sécurité Alimentaire', desc: 'Agriculture durable et aide d\'urgence.' },
       culture: { title: 'Culture & Paix', desc: 'Cohabitation pacifique et dialogue par les arts.' }
     },
-    donate: {
-      title: 'Faire un Don',
-      choose_amount: 'Choisissez un montant'
-    },
-    projects: {
-      view_details: 'Voir les détails'
-    },
-    blog_page: {
-      title: 'Journal d\'Impact',
-      subtitle: 'Analyses, récits et rapports du terrain.',
-      read_more: 'Lire l\'article'
-    },
-    chatbot: {
-      title: 'Assistant COMFORT',
-      typing: 'Analyse des statuts...',
-      status: 'En ligne (Interne)',
-      placeholder: 'Posez une question sur nos statuts...'
-    },
     contact: {
+      title: 'Nous Contacter',
+      subtitle: 'Pour toute demande institutionnelle ou partenariat.',
       address: 'Adresse physique',
       email: 'Courriel officiel',
       phone: 'Téléphone',
-      hours: 'Heures d\'ouverture',
-      title: 'Nous Contacter',
-      subtitle: 'Pour toute demande institutionnelle ou partenariat.',
-      form_name: 'Votre Nom',
-      form_email: 'Votre Email',
-      form_subject: 'Sujet',
-      form_message: 'Message',
       send: 'Envoyer le message'
-    },
-    partners: {
-      filter_all: 'Tous',
-      filter_ngo: 'ONG',
-      filter_gov: 'Gouvernement',
-      filter_corp: 'Entreprises',
-      filter_vol: 'Bénévoles'
-    },
-    footer: {
-      about_title: 'À propos de COMFORT',
-      about_text: 'COMFORT Asbl est une ONG dédiée à l\'amélioration des conditions de vie en RDC par la santé et l\'éducation.',
-      rights: 'Tous droits réservés.',
-      powered: 'Propulsé par Virtssoft Technologies',
-      nav_title: 'Navigation',
-      info_title: 'Informations',
-      follow_title: 'Nous suivre',
-      newsletter_text: 'Inscrivez-vous pour recevoir nos rapports annuels.',
-      subscribe: 'S\'abonner',
-      privacy: 'Confidentialité',
-      terms: 'Conditions',
-      history: 'Notre Histoire'
     }
   },
   EN: {
@@ -188,10 +161,6 @@ export const translations = {
       newsletter_subtitle: 'Stay informed about institutional decisions and impact reports.',
       testimonials_title: 'Life Stories & Testimonials',
       testimonials_subtitle: 'Discover the impact of our actions through the voices of COMFORT members.',
-      testimonial_form_title: 'Share your experience',
-      testimonial_role_placeholder: 'Your role',
-      testimonial_org_placeholder: 'Organization (optional)',
-      testimonial_phone_label: 'Phone',
       stats_members: 'Active Members',
       stats_volunteers: 'Dedicated Volunteers'
     },
@@ -200,9 +169,13 @@ export const translations = {
       who_title: 'Who are we?',
       who_text: 'COMFORT Asbl is a non-profit organization dedicated to social transformation in the Democratic Republic of Congo.',
       vision_title: 'Our Vision',
-      vision_text: 'To provide holistic and sustainable support to the most vulnerable populations by meeting their priority needs while promoting their empowerment and long-term inclusive and sustainable development, in order to build resilient communities.',
+      vision_text: 'To provide holistic and sustainable support to the most vulnerable populations by meeting their priority needs while promoting their empowerment and long-term inclusive and sustainable development.',
       mission_title: 'Our Mission',
       mission_text: 'Supporting vulnerable populations through health, education, and economic actions.',
+      identity_title: "Our Identity",
+      identity_slogan: '"Acting with integrity for every life impacted."',
+      contact_prompt: "We are listening.",
+      contact_cta: "Start a conversation",
       objectives_title: 'Strategic Objectives',
       objectives_intro: 'Our action focuses on four major axes to ensure systemic impact.',
       obj_1_title: 'Protection',
@@ -213,8 +186,47 @@ export const translations = {
       obj_3_text: 'Promote entrepreneurship and micro-credit for families.',
       obj_4_title: 'Education',
       obj_4_text: 'Secure a future for children through universal knowledge access.',
-      team_title: 'Our Governance',
-      team_desc: 'A dedicated and multidisciplinary board.'
+    },
+    projects: {
+      archive_title: "Action Archives",
+      archive_subtitle: "Our Commitments & Real Impact",
+      archive_description: "Consult our intervention reports classified by category. Each project is a promise kept to vulnerable communities.",
+      view_details: 'View details'
+    },
+    bulletin: {
+      official_comm: "Official Communication",
+      title_part1: "The Information",
+      title_part2: "Bulletin",
+      description: "Institutional archives of COMFORT Asbl. Find all our impact reports and strategic decisions here in PDF format.",
+    },
+    account: {
+      member_access: "Member Access",
+      login: "Login",
+      create_profile: "Create an institutional profile",
+    },
+    donate: {
+      tag: "Act of Solidarity",
+      title: "Make a Donation",
+      quote: '"Supporting COMFORT means investing in the dignity of those who only have their resilience to move forward."',
+      choose_amount: "Choose an amount",
+      your_details: "Your Details",
+      payment_method: "Payment Method",
+      method_card: "Bank Transfer / Card",
+      method_airtel: "Airtel Money (Recommended)",
+      method_mpesa: "M-Pesa",
+      bank_details_title: "Institutional Account Details",
+      location: "DRC - GOMA",
+      acc_name_label: "Account Name",
+      bank_label: "Bank",
+      currency_label: "Currency",
+      swift_label: "Swift / BIC",
+      acc_num_label: "Account Number",
+      confirm_btn: "Confirm act of donation",
+      security_protocol: "Active institutional security protocol",
+      transparency_title: "Transparency & Guarantee",
+      guarantee_1: "100% of your contribution is allocated to field programs.",
+      guarantee_2: "Each donation is followed by a detailed annual impact report.",
+      support_title: "Donor Assistance",
     },
     bank: {
       title: 'Banking Details',
@@ -223,21 +235,7 @@ export const translations = {
       bank_name_label: 'Bank',
       bank_name: 'TMB S.A.',
       account_number_label: 'Account Number (USD)',
-      account_number: '1234-5678901-23'
-    },
-    join_section: {
-      title: 'Join Us',
-      subtitle: 'Join a community of action dedicated to positive change in DRC.',
-      success: 'Your request has been successfully submitted to our board.',
-      name: 'Full Name',
-      email: 'Email Address',
-      type: 'Member Type',
-      type_placeholder: 'Select a type',
-      member_adh: 'Adherent Member',
-      member_sym: 'Sympathizer',
-      member_hon: 'Honorary Member',
-      message: 'Your Motivation',
-      submit: 'Submit my request'
+      account_number: '00017220062000003346537'
     },
     domains: {
       health: { title: 'Health & Water', desc: 'Primary care access and clean water supply.' },
@@ -246,57 +244,13 @@ export const translations = {
       food: { title: 'Food Security', desc: 'Sustainable agriculture and emergency aid.' },
       culture: { title: 'Culture & Peace', desc: 'Peaceful coexistence and arts dialogue.' }
     },
-    donate: {
-      title: 'Make a Donation',
-      choose_amount: 'Choose an amount'
-    },
-    projects: {
-      view_details: 'View details'
-    },
-    blog_page: {
-      title: 'Impact Journal',
-      subtitle: 'Field analyses, stories and reports.',
-      read_more: 'Read more'
-    },
-    chatbot: {
-      title: 'COMFORT Assistant',
-      typing: 'Analyzing statutes...',
-      status: 'Online (Internal)',
-      placeholder: 'Ask a question about our organization...'
-    },
     contact: {
+      title: 'Contact Us',
+      subtitle: 'For institutional requests or partnership.',
       address: 'Physical Address',
       email: 'Official Email',
       phone: 'Phone',
-      hours: 'Opening Hours',
-      title: 'Contact Us',
-      subtitle: 'For institutional requests or partnership.',
-      form_name: 'Your Name',
-      form_email: 'Your Email',
-      form_subject: 'Subject',
-      form_message: 'Message',
       send: 'Send message'
-    },
-    partners: {
-      filter_all: 'All',
-      filter_ngo: 'NGO',
-      filter_gov: 'Government',
-      filter_corp: 'Corporate',
-      filter_vol: 'Volunteers'
-    },
-    footer: {
-      about_title: 'About COMFORT',
-      about_text: 'COMFORT Asbl is an NGO dedicated to improving living conditions in DRC through health and education.',
-      rights: 'All rights reserved.',
-      powered: 'Powered by Virtssoft Technologies',
-      nav_title: 'Navigation',
-      info_title: 'Information',
-      follow_title: 'Follow us',
-      newsletter_text: 'Subscribe to receive our annual reports.',
-      subscribe: 'Subscribe',
-      privacy: 'Privacy',
-      terms: 'Terms',
-      history: 'Our History'
     }
   },
   SW: {
@@ -334,10 +288,6 @@ export const translations = {
       newsletter_subtitle: 'Pata taarifa kuhusu maamuzi ya kisheria na ripoti za matokeo.',
       testimonials_title: 'Hadithi za Maisha & Ushuhuda',
       testimonials_subtitle: 'Gundua athari za matendo yetu kupitia sauti za wanachama wa COMFORT.',
-      testimonial_form_title: 'Shiriki uzoefu wako',
-      testimonial_role_placeholder: 'Nafasi yako',
-      testimonial_org_placeholder: 'Shirika (hiari)',
-      testimonial_phone_label: 'Simu',
       stats_members: 'Wanachama Hai',
       stats_volunteers: 'Wajitoleaji waliojitolea'
     },
@@ -346,9 +296,13 @@ export const translations = {
       who_title: 'Sisi ni nani?',
       who_text: 'COMFORT Asbl ni shirika lisilo la faida linalojitolea kwa mabadiliko ya kijamii katika Jamhuri ya Kidemokrasia ya Kongo.',
       vision_title: 'Maono Yetu',
-      vision_text: 'Kutoa msaada wa jumla na endelevu kwa idadi ya watu walio katika mazingira magumu zaidi kwa kukidhi mahitaji yao ya kipaumbele huku tukikuza uwezeshaji wao na maendeleo jumuishi na endelevu ya muda mrefu, ili kujenga jamii zenye ujasiri.',
+      vision_text: 'Kutoa msaada wa jumla na endelevu kwa idadi ya watu walio katika mazingira magumu zaidi.',
       mission_title: 'Dhamira Yetu',
       mission_text: 'Kusaidia watu walio katika mazingira magumu kupitia afya, elimu, na uwezeshaji wa kiuchumi.',
+      identity_title: "Utambulisho Wetu",
+      identity_slogan: '"Kutenda kwa uadilifu kwa kila maisha yanayoathiriwa."',
+      contact_prompt: "Tunakusikiliza.",
+      contact_cta: "Anza mazungumzo",
       objectives_title: 'Malengo ya Kimkakati',
       objectives_intro: 'Hatua zetu zinazingatia nyanja nne kuu ili kuhakikisha athari ya kudumu.',
       obj_1_title: 'Ulinzi',
@@ -358,9 +312,48 @@ export const translations = {
       obj_3_title: 'Uhuru',
       obj_3_text: 'Kukuza ujasiriamali na mikopo midogo kwa familia.',
       obj_4_title: 'Elimu',
-      obj_4_text: 'Kuhakikisha mustakabali van watoto kupitia upatikanaji wa maarifa.',
-      team_title: 'Uongozi Wetu',
-      team_desc: 'Bodi iliyojitolea ya taaluma mbalimbali.'
+      obj_4_text: 'Kuhakikisha mustakabali wa watoto kupitia upatikanaji wa maarifa.',
+    },
+    projects: {
+      archive_title: "Kumbukumbu za Matendo",
+      archive_subtitle: "Ahadi Zetu na Athari Halisi",
+      archive_description: "Angalia ripoti zetu za uingiliaji kati zilizopangwa kwa kategoria. Kila mradi ni ahadi iliyotimizwa kwa jamii zilizo katika mazingira magumu.",
+      view_details: 'Angalia maelezo'
+    },
+    bulletin: {
+      official_comm: "Mawasiliano Rasmi",
+      title_part1: "Jarida la",
+      title_part2: "Habari",
+      description: "Kumbukumbu za kitaasisi za COMFORT Asbl. Pata ripoti zetu zote za athari na maamuzi ya kimkakati hapa katika muundo wa PDF.",
+    },
+    account: {
+      member_access: "Ufikiaji wa Mwanachama",
+      login: "Ingia",
+      create_profile: "Unda wasifu wa kitaasisi",
+    },
+    donate: {
+      tag: "Tendo la Umoja",
+      title: "Make a Donation",
+      quote: '"Kusaidia COMFORT ni kuwekeza katika utu wa wale ambao wana ujasiri wao tu wa kusonga mbele."',
+      choose_amount: "Chagua kiasi",
+      your_details: "Maelezo Yako",
+      payment_method: "Njia ya Malipo",
+      method_card: "Benki / Kadi",
+      method_airtel: "Airtel Money (Inapendekezwa)",
+      method_mpesa: "M-Pesa",
+      bank_details_title: "Maelezo ya Akaunti ya Kitaasisi",
+      location: "DRC - GOMA",
+      acc_name_label: "Jina la Akaunti",
+      bank_label: "Benki",
+      currency_label: "Fedha",
+      swift_label: "Swift / BIC",
+      acc_num_label: "Nambari ya Akaunti",
+      confirm_btn: "Thibitisha tendo la kutoa",
+      security_protocol: "Itifaki ya usalama wa kitaasisi inafanya kazi",
+      transparency_title: "Uwazi na Dhamana",
+      guarantee_1: "100% ya mchango wako hutengwa kwa programu za nyanjani.",
+      guarantee_2: "Kila msaada unafuatiwa na ripoti ya athari ya kila mwaka ya kina.",
+      support_title: "Usaidizi wa Wafadhili",
     },
     bank: {
       title: 'Maelezo ya Benki',
@@ -369,13 +362,22 @@ export const translations = {
       bank_name_label: 'Benki',
       bank_name: 'TMB S.A.',
       account_number_label: 'Nambari ya Akaunti (USD)',
-      account_number: '1234-5678901-23'
+      account_number: '00017220062000003346537'
     },
-    join_section: {
-      title: 'Jiunge Nasi',
-      subtitle: 'Jiunge na jamii ya hatua iliyojitolea kwa mabadiliko chanya nchini DRC.',
-      success: 'Ombi lako limetumwa kwa mafanikio kwa bodi yetu.',
-      name: 'Jina Kamili',
-      email: 'Barua Pepe',
-      type: 'Aina ya Mwanachama',
-      type_placeholder: 'Chagua aina',
+    domains: {
+      health: { title: 'Afya na Maji', desc: 'Upatikanaji wa huduma za afya na maji safi.' },
+      education: { title: 'Elimu', desc: 'Ujenzi wa miundombinu na usaidizi wa shule.' },
+      socio_eco: { title: 'Maendeleo ya Jamii', desc: 'Mikopo midogo na uwezeshaji wa wanawake.' },
+      food: { title: 'Usalama wa Chakula', desc: 'Kilimo endelevu na msaada wa dharura.' },
+      culture: { title: 'Utamaduni na Amani', desc: 'Kuishi kwa amani na mazungumzo kupitia sanaa.' }
+    },
+    contact: {
+      title: 'Wasiliana Nasi',
+      subtitle: 'Kwa maombi rasmi au ushirikiano.',
+      address: 'Anwani ya Ofisi',
+      email: 'Barua pepe rasmi',
+      phone: 'Simu',
+      send: 'Tuma ujumbe'
+    }
+  }
+};
