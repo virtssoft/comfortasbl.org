@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { TEAM_MEMBERS, CONTACT_INFO } from './constants';
-import { Heart, Shield, TrendingUp, Users, MapPin, Mail, Phone, ArrowRight, UserPlus, CheckCircle, Info } from 'lucide-react';
+import { 
+  Heart, Shield, TrendingUp, Users, MapPin, 
+  Mail, Phone, ArrowRight, UserPlus, CheckCircle, Info 
+} from 'lucide-react';
 import { api } from '../services/api';
 
 const About: React.FC = () => {
   const { t } = useLanguage();
-  const { partners, settings, loading } = useData();
+  const { settings, loading } = useData();
 
   // Membership Form State
   const [formState, setFormState] = useState({
@@ -40,6 +43,7 @@ const About: React.FC = () => {
 
       if (response.success) {
         setIsSuccess(true);
+        setFormState({ name: '', email: '', type: '', message: '' });
       } else {
         setError(response.error || "Une erreur est survenue lors de l'envoi.");
       }
@@ -78,7 +82,7 @@ const About: React.FC = () => {
         </div>
       </section>
 
-      {/* 🏛️ HISTOIRE - Layout Asymétrique */}
+      {/* 🏛️ HISTOIRE */}
       <section className="py-32">
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-12 gap-16 items-start">
@@ -102,7 +106,7 @@ const About: React.FC = () => {
         </div>
       </section>
 
-      {/* 🏛️ VISION & MISSION - Diptyque */}
+      {/* 🏛️ VISION & MISSION */}
       <section className="py-32 bg-comfort-light border-y border-gray-100">
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-0 border border-gray-100 shadow-sm">
@@ -120,35 +124,7 @@ const About: React.FC = () => {
         </div>
       </section>
 
-      {/* 🏛️ OBJECTIFS - Grille Institutionnelle */}
-      <section className="py-32">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-24">
-             <h2 className="text-4xl font-serif font-bold text-comfort-blue mb-4">{t('about_page.objectives_title')}</h2>
-             <div className="h-1 w-16 bg-comfort-gold mx-auto mb-6"></div>
-             <p className="text-gray-500 font-light max-w-2xl mx-auto">{t('about_page.objectives_intro')}</p>
-          </div>
-
-          <div className="grid md:grid-cols-4 gap-12">
-             {[
-               { icon: Shield, title: 'about_page.obj_1_title', text: 'about_page.obj_1_text' },
-               { icon: Heart, title: 'about_page.obj_2_title', text: 'about_page.obj_2_text' },
-               { icon: TrendingUp, title: 'about_page.obj_3_title', text: 'about_page.obj_3_text' },
-               { icon: Users, title: 'about_page.obj_4_title', text: 'about_page.obj_4_text' }
-             ].map((obj, i) => (
-                <div key={i} className="group text-center">
-                   <div className="w-16 h-16 rounded-full border border-gray-100 flex items-center justify-center mx-auto mb-8 group-hover:bg-comfort-blue transition-all duration-500">
-                      <obj.icon size={28} strokeWidth={1} className="text-comfort-gold group-hover:text-white transition-colors" />
-                   </div>
-                   <h4 className="text-lg font-bold uppercase tracking-widest mb-4">{t(obj.title)}</h4>
-                   <p className="text-sm text-gray-500 font-light leading-relaxed">{t(obj.text)}</p>
-                </div>
-             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 🏛️ REJOINDRE COMFORT - Section Adhésion */}
+      {/* 🏛️ REJOINDRE COMFORT (Section Formulaire Adaptée) */}
       <section className="py-32 bg-comfort-light border-y border-gray-100">
         <div className="container mx-auto px-6">
           <div className="max-w-5xl mx-auto bg-white shadow-2xl overflow-hidden rounded-sm flex flex-col md:flex-row border border-gray-100">
@@ -192,7 +168,7 @@ const About: React.FC = () => {
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {error && (
-                    <div className="p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-xs font-bold uppercase tracking-widest animate-in fade-in">
+                    <div className="p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-xs font-bold uppercase tracking-widest">
                       {error}
                     </div>
                   )}
@@ -278,14 +254,13 @@ const About: React.FC = () => {
         </div>
       </section>
 
-      {/* 🏛️ EQUIPE - Portraits Raffinés */}
+      {/* 🏛️ EQUIPE */}
       <section className="py-32 bg-comfort-dark text-white">
         <div className="container mx-auto px-6">
           <div className="text-center mb-24">
             <h2 className="text-4xl font-serif font-bold mb-4">{t('about_page.team_title')}</h2>
             <p className="text-gray-400 font-light">{t('about_page.team_desc')}</p>
           </div>
-
           <div className="grid md:grid-cols-4 gap-12">
             {TEAM_MEMBERS.map((member) => (
               <div key={member.id} className="group">
@@ -295,16 +270,13 @@ const About: React.FC = () => {
                 </div>
                 <h3 className="text-xl font-serif font-bold mb-1">{member.name}</h3>
                 <span className="text-comfort-gold text-xs font-bold uppercase tracking-widest block mb-4">{member.role}</span>
-                <p className="text-sm text-gray-400 font-light leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                  {member.bio}
-                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 🏛️ CONTACT - Style Institutionnel */}
+      {/* 🏛️ CONTACT */}
       <section className="py-32">
         <div className="container mx-auto px-6">
           <div className="bg-white border border-gray-100 shadow-2xl p-12 md:p-24 flex flex-col md:flex-row items-center gap-16">
