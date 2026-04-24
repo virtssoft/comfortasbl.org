@@ -164,20 +164,22 @@ export const api = {
     }));
   },
 
-  getBlogPostsById: async (id: string): Promise<BlogPost | null> => {
+getBlogPostsById: async (id: string): Promise<BlogPost | null> => {
     const a = await fetchData<any>(`articles.php?id=${id}`);
     if (!a) return null;
+    
     return {
       id: String(a.id),
       title: a.title || a.titre,
-      excerpt: a.content || a.contenu || '',
+      // CRITIQUE : Utilise 'contenu' (le nom SQL) et ne fais PAS de .substring ici
+      excerpt: a.contenu || a.content || '', 
       author: a.author || a.auteur || 'Admin',
       date: a.created_at?.split(' ')[0] || '',
       category: a.categorie || 'Actualité',
       image: getAbsoluteUrl(a.image_url),
       views: a.views || 0
     };
-  },
+},
 
   getBulletins: async (): Promise<Bulletin[]> => {
     const res = await fetchData<Bulletin[]>('bulletins.php');
