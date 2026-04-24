@@ -83,19 +83,19 @@ export const translations = {
     projects: {
       archive_title: "Archive des Actions",
       archive_subtitle: "Nos Engagements & Impact Réel",
-      archive_description: "Consultez nos rapports d'intervention classés par catégorie. Chaque projet est une promesse tenue envers les communautés vulnérables.",
+      archive_description: "Consultez nos rapports d'intervention classés par catégorie.",
       view_details: 'Voir les détails'
     },
     bulletin: {
       official_comm: "Communication Officielle",
       title_part1: "Le Bulletin",
       title_part2: "d'Information",
-      description: "Archives institutionnelles de COMFORT Asbl. Retrouvez ici tous nos rapports d'impact et décisions stratégiques au format PDF.",
+      description: "Archives institutionnelles de COMFORT Asbl au format PDF.",
     },
     donate: {
       tag: "Acte de Solidarité",
       title: "Soutenir notre action",
-      quote: '"Soutenir COMFORT, c\'est investir dans la dignité de ceux qui n\'ont que leur résilience pour avancer."',
+      quote: '"Soutenir COMFORT, c\'est investir dans la dignité."',
       choose_amount: "Choisissez un montant",
       your_details: "Vos Coordonnées",
       payment_method: "Méthode de paiement",
@@ -122,6 +122,18 @@ export const translations = {
       email: 'Courriel officiel',
       phone: 'Téléphone',
       send: 'Envoyer le message'
+    },
+    footer: {
+      about_title: "À Propos",
+      about_text: "COMFORT Asbl est une organisation dédiée à la transformation sociale et au soutien des populations vulnérables en RDC par des actions concrètes.",
+      history: "NOTRE HISTOIRE",
+      nav_title: "Navigation",
+      info_title: "Informations",
+      follow_title: "Nous suivre",
+      rights: "Tous droits réservés.",
+      privacy: "Confidentialité",
+      terms: "Conditions",
+      powered: "Propulsé par VIRTSSOFT"
     }
   },
 
@@ -216,12 +228,12 @@ export const translations = {
       official_comm: "Official Communication",
       title_part1: "The Info",
       title_part2: "Bulletin",
-      description: "Institutional archives of COMFORT Asbl. Find all reports in PDF format.",
+      description: "Institutional archives of COMFORT Asbl in PDF format.",
     },
     donate: {
       tag: "Act of Solidarity",
       title: "Support our mission",
-      quote: '"Supporting COMFORT means investing in the dignity of those who only have their resilience."',
+      quote: '"Supporting COMFORT means investing in dignity."',
       choose_amount: "Choose an amount",
       your_details: "Your Details",
       payment_method: "Payment Method",
@@ -248,6 +260,18 @@ export const translations = {
       email: 'Official Email',
       phone: 'Phone',
       send: 'Send message'
+    },
+    footer: {
+      about_title: "About Us",
+      about_text: "COMFORT Asbl is an organization dedicated to social transformation and supporting vulnerable populations in the DRC through concrete actions.",
+      history: "OUR HISTORY",
+      nav_title: "Navigation",
+      info_title: "Information",
+      follow_title: "Follow Us",
+      rights: "All rights reserved.",
+      privacy: "Privacy Policy",
+      terms: "Terms of Service",
+      powered: "Powered by VIRTSSOFT"
     }
   },
 
@@ -339,6 +363,18 @@ export const translations = {
       email: 'Barua pepe rasmi',
       phone: 'Simu',
       send: 'Tuma ujumbe'
+    },
+    footer: {
+      about_title: "Kuhusu Sisi",
+      about_text: "COMFORT Asbl ni shirika linalojitolea kwa mabadiliko ya kijamii na kusaidia watu walio katika mazingira magumu nchini DRC.",
+      history: "HISTORIA YETU",
+      nav_title: "Urambazaji",
+      info_title: "Habari",
+      follow_title: "Tufuate",
+      rights: "Haki zote zimehifadhiwa.",
+      privacy: "Sera ya Faragha",
+      terms: "Vigezo na Masharti",
+      powered: "Inaendeshwa na VIRTSSOFT"
     }
   }
 };
