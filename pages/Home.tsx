@@ -13,7 +13,7 @@ import { HeroSkeleton, CardSkeleton } from '../components/Skeletons';
 
 const Home: React.FC = () => {
   const { t } = useLanguage();
-  const { projects, partners, blogPosts, testimonials, bulletins, loading } = useData();
+  const { projects, partners, blogPosts, testimonials, loading } = useData();
   
   const [currentHero, setCurrentHero] = useState(0);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
@@ -84,13 +84,12 @@ const Home: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen bg-white font-sans overflow-x-hidden">
       
-      {/* 🏛️ SECTION 1: HERO OPTIMISÉ */}
+      {/* 🏛️ SECTION 1: HERO */}
       <section className="relative h-[85vh] md:h-[90vh] bg-comfort-dark overflow-hidden">
         {heroItems.map((post, idx) => (
           <div key={post.id} className={`absolute inset-0 transition-opacity duration-[2000ms] ${idx === currentHero ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}>
             <div className="absolute inset-0">
                <img src={post.image} alt={post.title} className="w-full h-full object-cover animate-ken-burns" />
-               {/* Overlay renforcé pour la lisibilité */}
                <div className="absolute inset-0 bg-comfort-dark/40"></div>
                <div className="absolute inset-0 bg-gradient-to-r from-comfort-dark/90 via-comfort-dark/40 to-transparent"></div>
             </div>
@@ -100,7 +99,6 @@ const Home: React.FC = () => {
                    <span className="h-[2px] w-12 bg-comfort-gold"></span>
                    <span className="text-comfort-gold font-bold tracking-[0.4em] uppercase text-[10px]">{post.category}</span>
                 </div>
-                {/* Typographie ajustée pour éviter l'effet "bloc" illisible */}
                 <h1 className="text-2xl md:text-4xl lg:text-5xl font-serif font-bold text-white mb-6 leading-[1.1] drop-shadow-lg">
                   {post.title}
                 </h1>
@@ -126,9 +124,12 @@ const Home: React.FC = () => {
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-24 items-center">
             <div>
-              <p className="text-comfort-gold font-bold uppercase tracking-[0.4em] mb-4 text-[10px]">{t('about_section.tag')}</p>
-              <h2 className="text-4xl md:text-5xl font-serif font-bold text-comfort-blue mb-8 leading-tight">L'intégrité au service de <span className="italic font-light text-comfort-gold">l'humanité</span>.</h2>
-              <p className="text-lg text-gray-600 font-light leading-relaxed mb-12">{t('about_page.who_text')}</p>
+              <p className="text-comfort-gold font-bold uppercase tracking-[0.4em] mb-4 text-[10px]">{t('home.mission_tag')}</p>
+              <h2 className="text-4xl md:text-5xl font-serif font-bold text-comfort-blue mb-8 leading-tight">
+                {t('home.mission_slogan').split('humanité')[0]}
+                <span className="italic font-light text-comfort-gold">humanité</span>.
+              </h2>
+              <p className="text-lg text-gray-600 font-light leading-relaxed mb-12">{t('home.mission_description')}</p>
               <Link to="/about" className="inline-flex items-center text-comfort-blue font-bold uppercase tracking-widest group text-xs">
                 {t('footer.history')} <ArrowRight className="ml-4 group-hover:translate-x-3 transition-transform text-comfort-gold" />
               </Link>
@@ -138,13 +139,13 @@ const Home: React.FC = () => {
                   <img src="https://api.comfortasbl.org/assets/images/about-who.jpg" className="aspect-[3/4] object-cover rounded-sm shadow-2xl" alt="Action" />
                   <div className="p-8 bg-comfort-blue text-white rounded-sm shadow-xl">
                     <h4 className="text-5xl font-serif font-bold mb-2">{projects.length}+</h4>
-                    <p className="text-[10px] uppercase tracking-widest font-bold opacity-80">Programmes</p>
+                    <p className="text-[10px] uppercase tracking-widest font-bold opacity-80">{t('nav.projects')}</p>
                   </div>
                </div>
                <div className="space-y-6">
                   <div className="p-8 bg-comfort-gold text-white rounded-sm shadow-xl">
                     <h4 className="text-5xl font-serif font-bold mb-2">{yearsOfExistence}</h4>
-                    <p className="text-[10px] uppercase tracking-widest font-bold opacity-80">Années d'impact</p>
+                    <p className="text-[10px] uppercase tracking-widest font-bold opacity-80">{t('common.impact')}</p>
                   </div>
                   <img src="https://api.comfortasbl.org/assets/images/about-hero.jpg" className="aspect-[3/4] object-cover rounded-sm shadow-2xl" alt="Impact" />
                </div>
@@ -173,7 +174,7 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 🏛️ SECTION 4: ACTUALITÉS (BLOG) */}
+      {/* 🏛️ SECTION 4: ACTUALITÉS */}
       <section className="py-24 bg-gray-50">
           <div className="container mx-auto px-6">
               <div className="flex flex-col md:flex-row justify-between items-end mb-12">
@@ -226,7 +227,7 @@ const Home: React.FC = () => {
         </section>
       )}
 
-      {/* 🏛️ SECTION 6: PARTENAIRES MARQUEE */}
+      {/* 🏛️ SECTION 6: PARTENAIRES */}
       <section className="py-16 bg-white border-t border-gray-100 overflow-hidden relative">
          <div className="container mx-auto px-4 mb-8 text-center">
              <h3 className="text-[10px] font-serif font-bold text-gray-400 uppercase tracking-[0.5em]">{t('nav.partners')}</h3>
@@ -268,20 +269,20 @@ const Home: React.FC = () => {
               </div>
 
               <div className="bg-gray-50 p-10 rounded-sm border border-gray-100 shadow-sm">
-                  <h3 className="text-xl font-bold mb-10 text-gray-900 uppercase tracking-widest text-center">Support Institutionnel</h3>
+                  <h3 className="text-xl font-bold mb-10 text-gray-900 uppercase tracking-widest text-center">{t('common.support_comfort')}</h3>
                   <div className="space-y-4 mb-12">
                       <a href={`mailto:${contactEmail}`} className="flex items-center justify-center w-full bg-comfort-blue text-white font-bold py-4 rounded-sm uppercase text-[10px] tracking-widest hover:bg-comfort-dark transition-colors"><Mail className="mr-3" size={16} /> {t('contact.send')}</a>
                   </div>
 
                   <div className="pt-10 border-t border-gray-200">
-                      <h4 className="text-[10px] font-bold text-comfort-blue uppercase tracking-[0.2em] mb-6 flex items-center"><HandCoins size={18} className="mr-3 text-comfort-gold" /> Coordonnées Bancaires</h4>
+                      <h4 className="text-[10px] font-bold text-comfort-blue uppercase tracking-[0.2em] mb-6 flex items-center"><HandCoins size={18} className="mr-3 text-comfort-gold" /> {t('bank.title')}</h4>
                       <div className="bg-white p-6 rounded-sm border border-dashed border-gray-300 space-y-4">
                           <div className="flex justify-between items-end">
-                              <div><p className="text-[8px] uppercase text-gray-400 font-bold mb-1">Intitulé</p><p className="text-xs font-bold text-gray-800">COMFORT ASBL</p></div>
-                              <div className="text-right"><p className="text-[8px] uppercase text-gray-400 font-bold mb-1">Banque</p><p className="text-xs text-gray-800">TMB S.A.</p></div>
+                              <div><p className="text-[8px] uppercase text-gray-400 font-bold mb-1">{t('bank.account_name_label')}</p><p className="text-xs font-bold text-gray-800">{t('bank.account_name')}</p></div>
+                              <div className="text-right"><p className="text-[8px] uppercase text-gray-400 font-bold mb-1">{t('bank.bank_name_label')}</p><p className="text-xs text-gray-800">{t('bank.bank_name')}</p></div>
                           </div>
                           <div>
-                              <p className="text-[8px] uppercase text-gray-400 font-bold mb-1">Numéro de compte (USD)</p>
+                              <p className="text-[8px] uppercase text-gray-400 font-bold mb-1">{t('bank.account_number_label')}</p>
                               <div className="flex items-center justify-between bg-gray-50 p-3 rounded mt-1 border border-gray-100">
                                   <code className="text-xs font-mono text-comfort-blue font-bold">00017220062000003346537</code>
                                   <button onClick={handleCopyAccount} className="text-comfort-gold hover:scale-110 transition-transform">{copied ? <CheckCircle2 size={16} className="text-green-500" /> : <Copy size={16} />}</button>
