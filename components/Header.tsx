@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Phone, Mail, ChevronDown, Menu, X, Facebook, Linkedin, User, Globe, FileText } from 'lucide-react';
+import { Phone, Mail, ChevronDown, Menu, X, Facebook, Linkedin, User, Globe } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 
@@ -34,10 +33,13 @@ const Header: React.FC = () => {
 
   return (
     <header className="w-full z-[100] relative font-sans sticky top-0 transition-all duration-500 bg-white shadow-sm">
-      {/* TOPBAR */}
-      <div className="bg-white border-b border-gray-50 py-2.5 hidden lg:block">
-        <div className="container mx-auto px-6 flex justify-between items-center text-[10px] text-gray-500 font-bold uppercase tracking-widest">
-          <div className="flex items-center space-x-8">
+      
+      {/* TOPBAR - Maintenant visible sur mobile avec ajustements */}
+      <div className="bg-white border-b border-gray-50 py-2 lg:py-2.5">
+        <div className="container mx-auto px-4 md:px-6 flex flex-col lg:flex-row justify-between items-center text-[9px] lg:text-[10px] text-gray-500 font-bold uppercase tracking-widest gap-3 lg:gap-0">
+          
+          {/* Contacts */}
+          <div className="flex flex-wrap justify-center items-center gap-4 lg:gap-8">
             <a href={`mailto:${contactEmail}`} className="flex items-center hover:text-comfort-gold transition-colors">
               <Mail size={12} className="mr-2 text-comfort-gold" />
               {contactEmail}
@@ -47,20 +49,26 @@ const Header: React.FC = () => {
               {contactPhone}
             </a>
           </div>
-          <div className="flex items-center space-x-8">
-            <div className="flex space-x-6 items-center">
-              <a href="https://www.facebook.com/photo/?fbid=122103347780826664" target="_blank" className="hover:text-comfort-gold transition-colors"><Facebook size={12} /></a>
-              <a href="https://x.com/AsblComfor44668" target="_blank" className="hover:text-comfort-gold transition-colors"><XIcon size={12} /></a>
+
+          {/* Social & Language */}
+          <div className="flex items-center justify-center space-x-6 lg:space-x-8">
+            <div className="flex space-x-5 items-center border-r border-gray-100 pr-6 lg:pr-8">
+              <a href="https://www.facebook.com/photo/?fbid=122103347780826664" target="_blank" rel="noreferrer" className="hover:text-comfort-gold transition-colors"><Facebook size={12} /></a>
+              <a href="https://x.com/AsblComfor44668" target="_blank" rel="noreferrer" className="hover:text-comfort-gold transition-colors"><XIcon size={12} /></a>
               <a href="#" className="hover:text-comfort-gold transition-colors"><Linkedin size={12} /></a>
             </div>
             
-            <div className="relative group cursor-pointer flex items-center border-l border-gray-100 pl-8">
+            <div className="relative group cursor-pointer flex items-center">
               <Globe size={12} className="mr-2 text-comfort-gold" />
               <span>{language}</span>
               <ChevronDown size={10} className="ml-1" />
               <div className="absolute top-full right-0 mt-1 bg-white border border-gray-100 shadow-2xl rounded-sm hidden group-hover:block z-[110] w-24 overflow-hidden">
                 {['FR', 'EN', 'SW'].map((lang) => (
-                  <button key={lang} onClick={() => setLanguage(lang as any)} className="block w-full text-left px-5 py-3 hover:bg-gray-50 text-[10px] font-bold text-gray-700">
+                  <button 
+                    key={lang} 
+                    onClick={() => setLanguage(lang as any)} 
+                    className="block w-full text-left px-5 py-3 hover:bg-gray-50 text-[10px] font-bold text-gray-700"
+                  >
                     {lang}
                   </button>
                 ))}
@@ -71,19 +79,28 @@ const Header: React.FC = () => {
       </div>
 
       {/* MAIN NAVBAR */}
-      <div className="bg-white/95 backdrop-blur-md py-4 lg:py-6">
-        <div className="container mx-auto px-6 flex justify-between items-center">
-          <Link to="/" className="flex items-center space-x-4 z-50">
-            <img src={logoUrl} alt="COMFORT" className="h-12 md:h-16 w-auto object-contain" />
+      <div className="bg-white/95 backdrop-blur-md py-3 lg:py-6">
+        <div className="container mx-auto px-4 md:px-6 flex justify-between items-center">
+          <Link to="/" className="flex items-center space-x-3 lg:space-x-4 z-50">
+            <img src={logoUrl} alt="COMFORT" className="h-10 md:h-16 w-auto object-contain" />
             <div className="flex flex-col">
-              <span className="text-comfort-blue font-serif font-bold text-xl md:text-2xl leading-none">COMFORT <span className="text-[10px] font-sans font-normal text-gray-400 uppercase tracking-widest">Asbl</span></span>
-              <span className="text-[8px] text-comfort-gold font-bold tracking-[0.2em] uppercase mt-1">Shield, Aid, Train & Inform.</span>
+              <span className="text-comfort-blue font-serif font-bold text-lg md:text-2xl leading-none">
+                COMFORT <span className="text-[9px] md:text-[10px] font-sans font-normal text-gray-400 uppercase tracking-widest">Asbl</span>
+              </span>
+              <span className="text-[7px] md:text-[8px] text-comfort-gold font-bold tracking-[0.15em] lg:tracking-[0.2em] uppercase mt-1">
+                Shield, Aid, Train & Inform.
+              </span>
             </div>
           </Link>
 
+          {/* Desktop Nav */}
           <nav className="hidden xl:flex items-center space-x-8">
             {navLinks.map((link) => (
-              <Link key={link.path} to={link.path} className={`text-[11px] font-bold uppercase tracking-widest flex items-center transition-colors ${isActive(link.path) ? 'text-comfort-blue border-b-2 border-comfort-gold pb-1' : 'text-gray-400 hover:text-comfort-blue'}`}>
+              <Link 
+                key={link.path} 
+                to={link.path} 
+                className={`text-[11px] font-bold uppercase tracking-widest flex items-center transition-colors ${isActive(link.path) ? 'text-comfort-blue border-b-2 border-comfort-gold pb-1' : 'text-gray-400 hover:text-comfort-blue'}`}
+              >
                 {link.icon && link.icon} {link.name}
               </Link>
             ))}
@@ -92,8 +109,9 @@ const Header: React.FC = () => {
             </Link>
           </nav>
 
+          {/* Mobile Toggle */}
           <button onClick={() => setIsMenuOpen(true)} className="xl:hidden text-comfort-blue p-2" aria-label="Menu">
-            <Menu size={32} />
+            <Menu size={28} />
           </button>
         </div>
       </div>
@@ -104,16 +122,25 @@ const Header: React.FC = () => {
           <div className="flex justify-between items-center p-6 border-b border-gray-50">
             <img src={logoUrl} alt="Logo" className="h-10 w-auto" />
             <button onClick={() => setIsMenuOpen(false)} className="bg-comfort-blue text-white p-3 rounded-full shadow-lg">
-              <X size={28} />
+              <X size={24} />
             </button>
           </div>
           <div className="flex flex-col p-8 space-y-8 overflow-y-auto">
             {navLinks.map((link) => (
-              <Link key={link.path} to={link.path} onClick={() => setIsMenuOpen(false)} className={`text-3xl font-serif font-bold ${isActive(link.path) ? 'text-comfort-gold' : 'text-comfort-blue'}`}>
+              <Link 
+                key={link.path} 
+                to={link.path} 
+                onClick={() => setIsMenuOpen(false)} 
+                className={`text-2xl font-serif font-bold ${isActive(link.path) ? 'text-comfort-gold' : 'text-comfort-blue'}`}
+              >
                 {link.name}
               </Link>
             ))}
-            <Link to="/donate" onClick={() => setIsMenuOpen(false)} className="bg-comfort-blue text-white py-5 text-center font-bold uppercase tracking-widest shadow-xl">
+            <Link 
+              to="/donate" 
+              onClick={() => setIsMenuOpen(false)} 
+              className="bg-comfort-blue text-white py-5 text-center font-bold uppercase tracking-widest shadow-xl"
+            >
               {t('nav.donate')}
             </Link>
           </div>
