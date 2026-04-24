@@ -1,4 +1,3 @@
-
 export const translations = {
   FR: {
     common: {
@@ -28,6 +27,9 @@ export const translations = {
       domains: 'Domaines'
     },
     home: {
+      mission_tag: 'NOTRE MISSION INSTITUTIONNELLE',
+      mission_slogan: "L'intégrité au service de l'humanité.",
+      mission_description: "COMFORT Asbl est une organisation sans but lucratif dédiée à la transformation sociale en République Démocratique du Congo.",
       newsletter_title: 'Bulletin d\'information',
       newsletter_subtitle: 'Restez informé des dernières décisions institutionnelles et rapports d\'impact.',
       testimonials_title: 'Récits de Vie & Témoignages',
@@ -52,7 +54,7 @@ export const translations = {
       who_title: 'Qui sommes-nous ?',
       who_text: 'COMFORT Asbl est une organisation sans but lucratif dédiée à la transformation sociale en République Démocratique du Congo. Nous intervenons là où la résilience des communautés a besoin d\'un levier pour s\'épanouir durablement.',
       vision_title: 'Notre Vision',
-      vision_text: 'Un Congo où chaque individu, peu importe son origine ou sa vulnérabilité, jouit de ses droits fondamentaux et participe activement au développement de sa nation.',
+      vision_text: 'Apporter un soutien holistique et durable aux populations les plus vulnérables en répondant à leur besoin prioritaire tout en favorisant leur autonomisation et développement inclusif et durable à long terme, afin de construire des communautés résilientes.',
       mission_title: 'Notre Mission',
       mission_text: 'Accompagner les populations vulnérables par des actions concrètes en santé, éducation et autonomisation économique pour restaurer la dignité humaine.',
       objectives_title: 'Nos Objectifs Stratégiques',
@@ -67,6 +69,15 @@ export const translations = {
       obj_4_text: 'Garantir un futur aux enfants par un accès universel au savoir.',
       team_title: 'Notre Gouvernance',
       team_desc: 'Un conseil d\'administration engagé et pluridisciplinaire.'
+    },
+    bank: {
+      title: 'Coordonnées Bancaires',
+      account_name_label: 'Intitulé',
+      account_name: 'COMFORT ASBL',
+      bank_name_label: 'Banque',
+      bank_name: 'TMB S.A.',
+      account_number_label: 'Numéro de compte (USD)',
+      account_number: '1234-5678901-23' 
     },
     join_section: {
       title: 'Devenir Membre',
@@ -170,6 +181,9 @@ export const translations = {
       domains: 'Domains'
     },
     home: {
+      mission_tag: 'OUR INSTITUTIONAL MISSION',
+      mission_slogan: 'Integrity at the service of humanity.',
+      mission_description: 'COMFORT Asbl is a non-profit organization dedicated to social transformation in the Democratic Republic of Congo.',
       newsletter_title: 'Newsletter Bulletin',
       newsletter_subtitle: 'Stay informed about institutional decisions and impact reports.',
       testimonials_title: 'Life Stories & Testimonials',
@@ -186,7 +200,7 @@ export const translations = {
       who_title: 'Who are we?',
       who_text: 'COMFORT Asbl is a non-profit organization dedicated to social transformation in the Democratic Republic of Congo.',
       vision_title: 'Our Vision',
-      vision_text: 'A Congo where every individual enjoys fundamental rights and participates in national development.',
+      vision_text: 'To provide holistic and sustainable support to the most vulnerable populations by meeting their priority needs while promoting their empowerment and long-term inclusive and sustainable development, in order to build resilient communities.',
       mission_title: 'Our Mission',
       mission_text: 'Supporting vulnerable populations through health, education, and economic actions.',
       objectives_title: 'Strategic Objectives',
@@ -201,6 +215,15 @@ export const translations = {
       obj_4_text: 'Secure a future for children through universal knowledge access.',
       team_title: 'Our Governance',
       team_desc: 'A dedicated and multidisciplinary board.'
+    },
+    bank: {
+      title: 'Banking Details',
+      account_name_label: 'Account Name',
+      account_name: 'COMFORT ASBL',
+      bank_name_label: 'Bank',
+      bank_name: 'TMB S.A.',
+      account_number_label: 'Account Number (USD)',
+      account_number: '1234-5678901-23'
     },
     join_section: {
       title: 'Join Us',
@@ -304,6 +327,9 @@ export const translations = {
       domains: 'Maeneo'
     },
     home: {
+      mission_tag: 'DHAMIRA YETU YA KITAASISI',
+      mission_slogan: 'Uadilifu katika huduma ya ubinadamu.',
+      mission_description: 'COMFORT Asbl ni shirika lisilo la faida linalojitolea kwa mabadiliko ya kijamii katika Jamhuri ya Kidemokrasia ya Kongo.',
       newsletter_title: 'Jarida la Habari',
       newsletter_subtitle: 'Pata taarifa kuhusu maamuzi ya kisheria na ripoti za matokeo.',
       testimonials_title: 'Hadithi za Maisha & Ushuhuda',
@@ -320,7 +346,7 @@ export const translations = {
       who_title: 'Sisi ni nani?',
       who_text: 'COMFORT Asbl ni shirika lisilo la faida linalojitolea kwa mabadiliko ya kijamii katika Jamhuri ya Kidemokrasia ya Kongo.',
       vision_title: 'Maono Yetu',
-      vision_text: 'Kongo ambapo kila mtu anafurahia haki za kimsingi na kushiriki katika maendeleo ya taifa.',
+      vision_text: 'Kutoa msaada wa jumla na endelevu kwa idadi ya watu walio katika mazingira magumu zaidi kwa kukidhi mahitaji yao ya kipaumbele huku tukikuza uwezeshaji wao na maendeleo jumuishi na endelevu ya muda mrefu, ili kujenga jamii zenye ujasiri.',
       mission_title: 'Dhamira Yetu',
       mission_text: 'Kusaidia watu walio katika mazingira magumu kupitia afya, elimu, na uwezeshaji wa kiuchumi.',
       objectives_title: 'Malengo ya Kimkakati',
@@ -336,6 +362,15 @@ export const translations = {
       team_title: 'Uongozi Wetu',
       team_desc: 'Bodi iliyojitolea ya taaluma mbalimbali.'
     },
+    bank: {
+      title: 'Maelezo ya Benki',
+      account_name_label: 'Jina la Akaunti',
+      account_name: 'COMFORT ASBL',
+      bank_name_label: 'Benki',
+      bank_name: 'TMB S.A.',
+      account_number_label: 'Nambari ya Akaunti (USD)',
+      account_number: '1234-5678901-23'
+    },
     join_section: {
       title: 'Jiunge Nasi',
       subtitle: 'Jiunge na jamii ya hatua iliyojitolea kwa mabadiliko chanya nchini DRC.',
@@ -344,70 +379,3 @@ export const translations = {
       email: 'Barua Pepe',
       type: 'Aina ya Mwanachama',
       type_placeholder: 'Chagua aina',
-      member_adh: 'Mwanachama Kamili',
-      member_sym: 'Mshiriki',
-      member_hon: 'Mwanachama wa Heshima',
-      message: 'Nia Yako',
-      submit: 'Tuma ombi langu'
-    },
-    domains: {
-      health: { title: 'Afya na Maji', desc: 'Upatikanaji wa huduma za afya na maji safi.' },
-      education: { title: 'Elimu', desc: 'Ujenzi van miundombinu na usaidizi van shule.' },
-      socio_eco: { title: 'Maendeleo ya Jamii', desc: 'Mikopo midogo na uwezeshaji van wanawake.' },
-      food: { title: 'Usalama wa Chakula', desc: 'Kilimo endelevu na msaada wa dharura.' },
-      culture: { title: 'Utamaduni na Amani', desc: 'Kuishi kwa amani na mazungumzo kupitia sanaa.' }
-    },
-    donate: {
-      title: 'Toa Msaada',
-      choose_amount: 'Chagua kiasi'
-    },
-    projects: {
-      view_details: 'Angalia maelezo'
-    },
-    blog_page: {
-      title: 'Jarida la Athari',
-      subtitle: 'Uchambuzi wa nyanjani, hadithi na ripoti.',
-      read_more: 'Soma zaidi'
-    },
-    chatbot: {
-      title: 'Msaidizi wa COMFORT',
-      typing: 'Anandika...',
-      status: 'Yuko mtandaoni (Ndani)',
-      placeholder: 'Uliza swali lako...'
-    },
-    contact: {
-      address: 'Anwani ya Ofisi',
-      email: 'Barua pepe rasmi',
-      phone: 'Simu',
-      hours: 'Saa za kazi',
-      title: 'Wasiliana Nasi',
-      subtitle: 'Kwa maombi rasmi au ushirikiano.',
-      form_name: 'Jina Lako',
-      form_email: 'Barua Pepe Yako',
-      form_subject: 'Mada',
-      form_message: 'Ujumbe',
-      send: 'Tuma ujumbe'
-    },
-    partners: {
-      filter_all: 'Wote',
-      filter_ngo: 'NGO',
-      filter_gov: 'Serikali',
-      filter_corp: 'Makampuni',
-      filter_vol: 'Wajitoleaji'
-    },
-    footer: {
-      about_title: 'Kuhusu COMFORT',
-      about_text: 'COMFORT Asbl ni NGO inayojitolea kuboresha hali ya maisha nchini DRC kupitia afya na elimu.',
-      rights: 'Haki zote zimehifadhiwa.',
-      powered: 'Imewezeshwa na Virtssoft Technologies',
-      nav_title: 'Menyu',
-      info_title: 'Habari',
-      follow_title: 'Tufuate',
-      newsletter_text: 'Jiandikishe kupokea ripoti zetu za kila mwaka.',
-      subscribe: 'Jiandikishe',
-      privacy: 'Siri',
-      terms: 'Vigezo',
-      history: 'Historia Yetu'
-    }
-  }
-};
