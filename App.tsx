@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { HashRouter as Router, Routes, Route, useLocation, useParams, Link } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -21,6 +21,7 @@ import { DataProvider, useData } from './context/DataContext';
 import { AuthProvider } from './context/AuthContext';
 import { Calendar, Tag, ArrowLeft, Eye } from 'lucide-react';
 import { api } from './services/api';
+import { BlogPost, Project } from './types';
 
 // --- UTILITAIRE : Scroll en haut lors du changement de page ---
 const ScrollToTop = () => {
@@ -34,20 +35,45 @@ const ScrollToTop = () => {
 // --- COMPOSANT : Détail Dynamique (Projets & Blog) ---
 const DetailPage = ({ type }: { type: 'project' | 'blog' }) => {
     const { id } = useParams<{ id: string }>();
-    const { projects, blogPosts, loading } = useData();
+    const { projects, blogPosts, loading: contextLoading } = useData();
     const { t } = useLanguage();
 
-    const item = type === 'project' 
+    // État local pour le contenu complet (évite les coupures)
+    const [fullItem, setFullItem] = useState<any>(null);
+    const [localLoading, setLocalLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchFullContent = async () => {
+            if (!id) return;
+            setLocalLoading(true);
+            try {
+                if (type === 'blog') {
+                    const data = await api.getBlogPostsById(id);
+                    if (data) setFullItem(data);
+                } else {
+                    // Pour les projets, on cherche dans le contexte ou on pourrait créer api.getProjectById
+                    const proj = projects.find(p => p.id === id);
+                    if (proj) setFullItem(proj);
+                }
+            } catch (error) {
+                console.error("Erreur lors du chargement du détail:", error);
+            } finally {
+                setLocalLoading(false);
+            }
+        };
+
+        fetchFullContent();
+    }, [id, type, projects]);
+
+    // On cherche d'abord dans le contexte pour un affichage immédiat
+    const contextItem = type === 'project' 
         ? projects.find(p => p.id === id) 
         : blogPosts.find(b => b.id === id);
 
-    useEffect(() => {
-        if (type === 'blog' && id) {
-            api.getBlogPostsById(id);
-        }
-    }, [type, id]);
+    // L'item final est soit la version complète de l'API, soit celle du contexte en attendant
+    const item = fullItem || contextItem;
 
-    if (loading) return (
+    if (contextLoading && !item) return (
         <div className="min-h-screen bg-white flex items-center justify-center">
             <div className="w-12 h-12 border-4 border-comfort-gold border-t-transparent rounded-full animate-spin"></div>
         </div>
@@ -60,8 +86,9 @@ const DetailPage = ({ type }: { type: 'project' | 'blog' }) => {
         </div>
     );
 
-    // Priorité au contenu long pour éviter que l'article ne soit coupé
-    const fullContent = (item as any).content || (item as any).description || (item as any).excerpt;
+    // On récupère le contenu sans le couper
+    // Note: Dans ton api.ts, assure-toi que getBlogPostsById renvoie le texte complet dans 'excerpt' ou 'content'
+    const fullContent = item.content || item.description || item.excerpt;
 
     return (
         <div className="bg-white min-h-screen pb-32">
@@ -83,7 +110,7 @@ const DetailPage = ({ type }: { type: 'project' | 'blog' }) => {
                         </span>
                         {type === 'blog' && (
                             <span className="flex items-center text-comfort-dark font-bold text-[10px] uppercase tracking-widest">
-                                <Eye size={14} className="mr-2 text-comfort-gold" /> {item.views || 0} lectures
+                                <eye size={14} className="mr-2 text-comfort-gold" /> {item.views || 0} lectures
                             </span>
                         )}
                     </div>
@@ -97,11 +124,8 @@ const DetailPage = ({ type }: { type: 'project' | 'blog' }) => {
             <div className="container mx-auto px-6 mt-16 md:mt-24">
                 <div className="grid lg:grid-cols-12 gap-20">
                     <div className="lg:col-span-8">
-                        {/* dangerouslySetInnerHTML est utilisé ici au cas où le contenu contient du HTML (gras, listes).
-                            Si c'est du texte brut, tu peux remplacer par : {fullContent}
-                        */}
                         <div 
-                            className="prose prose-xl prose-headings:font-serif prose-headings:text-comfort-blue text-gray-600 font-light leading-relaxed max-w-none"
+                            className="prose prose-xl prose-headings:font-serif prose-headings:text-comfort-blue text-gray-600 font-light leading-relaxed max-w-none whitespace-pre-line"
                             dangerouslySetInnerHTML={{ __html: fullContent || "Chargement du contenu détaillé..." }}
                         />
                     </div>
@@ -158,7 +182,6 @@ const AppContent = () => {
                         <Route path="/account" element={<Account />} />
                         <Route path="/admin" element={<AdminDashboard />} />
                         <Route path="/virtssoft-impact" element={<VirtssoftImpact />} />
-                        {/* Fallback en cas d'URL erronée */}
                         <Route path="*" element={<Home />} />
                     </Routes>
                 </main>
@@ -170,7 +193,6 @@ const AppContent = () => {
     );
 };
 
-// --- COMPOSANT : Racine de l'App (Providers) ---
 const App: React.FC = () => {
   return (
     <LanguageProvider>
