@@ -38,118 +38,116 @@ const DetailPage = ({ type }: { type: 'project' | 'blog' }) => {
     const { projects, blogPosts, loading: contextLoading } = useData();
     const { t } = useLanguage();
 
-    // État local pour le contenu complet (évite les coupures)
+    // État pour stocker la version complète (sans coupure)
     const [fullItem, setFullItem] = useState<any>(null);
-    const [localLoading, setLocalLoading] = useState(true);
+    const [fetching, setFetching] = useState(false);
 
     useEffect(() => {
-        const fetchFullContent = async () => {
+        const loadFullData = async () => {
             if (!id) return;
-            setLocalLoading(true);
+            setFetching(true);
             try {
                 if (type === 'blog') {
+                    // Appel à la méthode qui récupère le MEDIUMTEXT sans limite
                     const data = await api.getBlogPostsById(id);
                     if (data) setFullItem(data);
                 } else {
-                    // Pour les projets, on cherche dans le contexte ou on pourrait créer api.getProjectById
+                    // Pour les projets, on cherche dans la liste existante
                     const proj = projects.find(p => p.id === id);
                     if (proj) setFullItem(proj);
                 }
             } catch (error) {
-                console.error("Erreur lors du chargement du détail:", error);
+                console.error("Erreur de chargement du contenu:", error);
             } finally {
-                setLocalLoading(false);
+                setFetching(false);
             }
         };
 
-        fetchFullContent();
+        loadFullData();
     }, [id, type, projects]);
 
-    // On cherche d'abord dans le contexte pour un affichage immédiat
+    // On utilise l'item complet en priorité, sinon celui du contexte en attendant
     const contextItem = type === 'project' 
         ? projects.find(p => p.id === id) 
         : blogPosts.find(b => b.id === id);
 
-    // L'item final est soit la version complète de l'API, soit celle du contexte en attendant
     const item = fullItem || contextItem;
 
     if (contextLoading && !item) return (
-        <div className="min-h-screen bg-white flex items-center justify-center">
-            <div className="w-12 h-12 border-4 border-comfort-gold border-t-transparent rounded-full animate-spin"></div>
+        <div className="min-h-screen flex items-center justify-center">
+            <div className="w-10 h-10 border-4 border-comfort-gold border-t-transparent rounded-full animate-spin"></div>
         </div>
     );
 
     if (!item) return (
-        <div className="min-h-screen bg-white py-40 text-center">
-            <h2 className="text-3xl font-serif font-bold text-comfort-blue mb-6">Contenu non trouvé</h2>
-            <Link to="/" className="text-comfort-gold font-bold uppercase tracking-widest hover:underline">Retourner à l'accueil</Link>
+        <div className="min-h-screen py-40 text-center">
+            <h2 className="text-2xl font-serif text-comfort-blue mb-4">Contenu introuvable</h2>
+            <Link to="/" className="text-comfort-gold underline">Retour à l'accueil</Link>
         </div>
     );
 
-    // On récupère le contenu sans le couper
-    // Note: Dans ton api.ts, assure-toi que getBlogPostsById renvoie le texte complet dans 'excerpt' ou 'content'
-    const fullContent = item.content || item.description || item.excerpt;
+    // Récupération du contenu (on vérifie toutes les clés possibles envoyées par l'API)
+    const displayContent = item.content || item.excerpt || item.description || "";
 
     return (
-        <div className="bg-white min-h-screen pb-32">
-            {/* Hero Section */}
-            <div className="relative h-[60vh] md:h-[70vh] w-full overflow-hidden bg-comfort-dark">
-                <img src={item.image} alt={item.title} className="w-full h-full object-cover opacity-60" />
-                <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent"></div>
-                <div className="absolute inset-0 bg-black/20"></div>
-                <div className="container absolute bottom-0 left-1/2 -translate-x-1/2 px-6 pb-12 z-10">
-                    <Link to={type === 'project' ? "/projects" : "/blog"} className="inline-flex items-center text-comfort-dark font-bold uppercase tracking-widest text-[10px] mb-8 hover:text-comfort-gold transition-colors">
-                        <ArrowLeft size={14} className="mr-3" /> {t('common.back')}
+        <div className="bg-white min-h-screen pb-20">
+            {/* Header Image */}
+            <div className="relative h-[50vh] md:h-[65vh] w-full bg-comfort-dark">
+                <img src={item.image} alt={item.title} className="w-full h-full object-cover opacity-70" />
+                <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent"></div>
+                <div className="container absolute bottom-0 left-1/2 -translate-x-1/2 px-6 pb-10 z-10">
+                    <Link to={type === 'project' ? "/projects" : "/blog"} className="inline-flex items-center text-comfort-dark font-bold text-[10px] uppercase tracking-widest mb-6 hover:text-comfort-gold transition-colors">
+                        <ArrowLeft size={14} className="mr-2" /> {t('common.back')}
                     </Link>
-                    <div className="flex flex-wrap items-center gap-6 mb-6">
-                        <span className="bg-comfort-gold text-white px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] shadow-xl">
+                    <div className="flex items-center gap-4 mb-4">
+                        <span className="bg-comfort-gold text-white px-3 py-1 text-[9px] font-bold uppercase tracking-tighter">
                             {item.category}
                         </span>
-                        <span className="flex items-center text-comfort-dark font-bold text-[10px] uppercase tracking-widest">
-                            <Calendar size={14} className="mr-2 text-comfort-gold" /> {item.date}
+                        <span className="flex items-center text-comfort-dark font-semibold text-[10px] uppercase">
+                            <Calendar size={12} className="mr-1.5 text-comfort-gold" /> {item.date}
                         </span>
-                        {type === 'blog' && (
-                            <span className="flex items-center text-comfort-dark font-bold text-[10px] uppercase tracking-widest">
-                                <eye size={14} className="mr-2 text-comfort-gold" /> {item.views || 0} lectures
-                            </span>
-                        )}
                     </div>
-                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold text-comfort-blue leading-tight max-w-5xl">
+                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-serif font-bold text-comfort-blue leading-tight">
                         {item.title}
                     </h1>
                 </div>
             </div>
 
-            {/* Content Section */}
-            <div className="container mx-auto px-6 mt-16 md:mt-24">
-                <div className="grid lg:grid-cols-12 gap-20">
+            {/* Main Content */}
+            <div className="container mx-auto px-6 mt-12">
+                <div className="grid lg:grid-cols-12 gap-16">
                     <div className="lg:col-span-8">
+                        {/* DANGEROUSLY SET INNER HTML :
+                           C'est ici que le texte complet s'affiche. 
+                           Le whitespace-pre-line permet de garder les retours à la ligne si ce n'est pas du HTML.
+                        */}
                         <div 
-                            className="prose prose-xl prose-headings:font-serif prose-headings:text-comfort-blue text-gray-600 font-light leading-relaxed max-w-none whitespace-pre-line"
-                            dangerouslySetInnerHTML={{ __html: fullContent || "Chargement du contenu détaillé..." }}
+                            className="prose prose-lg md:prose-xl max-w-none text-gray-700 font-light leading-relaxed whitespace-pre-line"
+                            dangerouslySetInnerHTML={{ __html: displayContent }}
                         />
+                        
+                        {fetching && (
+                            <p className="mt-4 text-comfort-gold animate-pulse text-sm">Mise à jour du contenu...</p>
+                        )}
                     </div>
-                    
-                    {/* Sidebar */}
+
                     <aside className="lg:col-span-4">
-                        <div className="bg-comfort-light p-10 border border-gray-100 shadow-sm sticky top-32">
-                            <h4 className="text-xl font-serif font-bold text-comfort-blue mb-8 border-b border-gray-200 pb-4">Informations Clés</h4>
-                            <div className="space-y-8">
+                        <div className="bg-gray-50 p-8 border border-gray-100 sticky top-28">
+                            <h4 className="font-serif font-bold text-comfort-blue mb-6 border-b pb-2">Détails</h4>
+                            <div className="space-y-6">
                                 <div>
-                                    <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Entité</span>
-                                    <p className="text-sm font-bold text-comfort-dark">COMFORT Asbl</p>
+                                    <span className="text-[10px] uppercase text-gray-400 font-bold block mb-1">Organisation</span>
+                                    <p className="text-sm font-bold">COMFORT ASBL</p>
                                 </div>
                                 <div>
-                                    <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Domaine</span>
-                                    <div className="flex items-center text-comfort-blue font-bold text-xs">
-                                        <Tag size={14} className="mr-2 text-comfort-gold" /> {item.category}
-                                    </div>
+                                    <span className="text-[10px] uppercase text-gray-400 font-bold block mb-1">Vues</span>
+                                    <p className="text-sm font-bold flex items-center">
+                                        <Eye size={14} className="mr-2 text-comfort-gold" /> {item.views || 0}
+                                    </p>
                                 </div>
-                                <div className="pt-8 border-t border-gray-100">
-                                   <Link to="/donate" className="bg-comfort-blue text-white w-full py-4 flex items-center justify-center font-bold uppercase text-[10px] tracking-widest hover:bg-comfort-gold transition-all shadow-xl">
-                                      Soutenir ce projet
-                                   </Link>
-                                </div>
+                                <Link to="/donate" className="block w-full bg-comfort-blue text-white text-center py-4 font-bold uppercase text-[10px] tracking-widest hover:bg-comfort-gold transition-all">
+                                    Faire un don
+                                </Link>
                             </div>
                         </div>
                     </aside>
@@ -159,14 +157,14 @@ const DetailPage = ({ type }: { type: 'project' | 'blog' }) => {
     );
 };
 
-// --- COMPOSANT : Structure de l'App ---
+// --- ROUTER & LAYOUT ---
 const AppContent = () => {
     const { loading } = useData();
     return (
         <>
             {loading && <LoadingOverlay />}
             <ScrollToTop />
-            <div className={`transition-opacity duration-1000 ${loading ? 'opacity-0' : 'opacity-100'}`}>
+            <div className={`transition-opacity duration-700 ${loading ? 'opacity-0' : 'opacity-100'}`}>
                 <Header />
                 <main className="flex-grow">
                     <Routes>
@@ -199,7 +197,7 @@ const App: React.FC = () => {
       <AuthProvider>
         <DataProvider>
             <Router>
-                <div className="flex flex-col min-h-screen font-sans antialiased text-gray-800 selection:bg-comfort-gold/30">
+                <div className="flex flex-col min-h-screen">
                     <AppContent />
                 </div>
             </Router>
