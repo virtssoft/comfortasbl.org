@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
@@ -68,7 +67,9 @@ const About: React.FC = () => {
         </div>
         <div className="container relative z-10 mx-auto px-6">
           <div className="max-w-3xl animate-fade-in-up">
-            <span className="text-comfort-gold font-bold uppercase tracking-[0.4em] text-xs mb-4 block">Notre Identité</span>
+            <span className="text-comfort-gold font-bold uppercase tracking-[0.4em] text-xs mb-4 block">
+              {t('about_page.identity_title')}
+            </span>
             <h1 className="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight">
               {t('about_page.hero_title')}
             </h1>
@@ -94,7 +95,7 @@ const About: React.FC = () => {
                 <img src="https://api.comfortasbl.org/assets/images/about-who.jpg" className="w-full h-full object-cover" alt="COMFORT in action" />
               </div>
               <div className="absolute -bottom-10 -left-10 bg-comfort-gold p-10 text-white shadow-xl hidden md:block">
-                 <p className="font-serif italic text-2xl">"Agir avec intégrité pour chaque vie impactée."</p>
+                 <p className="font-serif italic text-2xl">{t('about_page.identity_slogan')}</p>
               </div>
             </div>
           </div>
@@ -106,12 +107,12 @@ const About: React.FC = () => {
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-0 border border-gray-100 shadow-sm">
             <div className="p-16 bg-white border-r border-gray-100">
-               <span className="text-comfort-gold font-bold uppercase tracking-widest text-xs mb-6 block">Le Regard</span>
+               <span className="text-comfort-gold font-bold uppercase tracking-widest text-xs mb-6 block">VISION</span>
                <h3 className="text-3xl font-serif font-bold text-comfort-blue mb-6">{t('about_page.vision_title')}</h3>
                <p className="text-gray-500 font-light leading-relaxed">{t('about_page.vision_text')}</p>
             </div>
             <div className="p-16 bg-white">
-               <span className="text-comfort-gold font-bold uppercase tracking-widest text-xs mb-6 block">Le Devoir</span>
+               <span className="text-comfort-gold font-bold uppercase tracking-widest text-xs mb-6 block">MISSION</span>
                <h3 className="text-3xl font-serif font-bold text-comfort-blue mb-6">{t('about_page.mission_title')}</h3>
                <p className="text-gray-500 font-light leading-relaxed">{t('about_page.mission_text')}</p>
             </div>
@@ -164,7 +165,7 @@ const About: React.FC = () => {
                 <div className="flex items-start space-x-4">
                   <div className="mt-1"><Info size={18} className="text-comfort-gold" /></div>
                   <p className="text-xs text-gray-400 font-light leading-tight">
-                    L'adhésion est soumise à l'approbation du Conseil d'Administration conformément aux statuts de COMFORT Asbl.
+                    {t('join_section.legal_note')}
                   </p>
                 </div>
               </div>
@@ -177,15 +178,15 @@ const About: React.FC = () => {
                   <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center">
                     <CheckCircle size={40} className="text-green-500" />
                   </div>
-                  <h3 className="text-2xl font-serif font-bold text-comfort-blue">Demande Transmise</h3>
+                  <h3 className="text-2xl font-serif font-bold text-comfort-blue">{t('join_section.success_title')}</h3>
                   <p className="text-gray-500 font-light max-w-sm">
-                    {t('join_section.success')}
+                    {t('join_section.success_text')}
                   </p>
                   <button 
                     onClick={() => setIsSuccess(false)}
                     className="text-comfort-gold font-bold uppercase tracking-widest text-xs hover:underline mt-8"
                   >
-                    Faire une autre demande
+                    {t('join_section.another_request')}
                   </button>
                 </div>
               ) : (
@@ -199,7 +200,7 @@ const About: React.FC = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
-                        {t('join_section.name')}
+                        {t('join_section.name_label')}
                       </label>
                       <input 
                         type="text" 
@@ -212,7 +213,7 @@ const About: React.FC = () => {
                     </div>
                     <div>
                       <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
-                        {t('join_section.email')}
+                        {t('join_section.email_label')}
                       </label>
                       <input 
                         type="email" 
@@ -227,7 +228,7 @@ const About: React.FC = () => {
 
                   <div>
                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
-                      {t('join_section.type')}
+                      {t('join_section.type_label')}
                     </label>
                     <select 
                       required
@@ -236,15 +237,15 @@ const About: React.FC = () => {
                       className="w-full bg-gray-50 border-b border-gray-200 p-4 outline-none focus:border-comfort-gold transition-all font-bold text-xs uppercase tracking-widest bg-white"
                     >
                       <option value="">{t('join_section.type_placeholder')}</option>
-                      <option value="adhérent">{t('join_section.member_adh')}</option>
-                      <option value="sympathisant">{t('join_section.member_sym')}</option>
-                      <option value="honneur">{t('join_section.member_hon')}</option>
+                      <option value="adhérent">{t('join_section.type_adh')}</option>
+                      <option value="sympathisant">{t('join_section.type_sym')}</option>
+                      <option value="honneur">{t('join_section.type_hon')}</option>
                     </select>
                   </div>
 
                   <div>
                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
-                      {t('join_section.message')}
+                      {t('join_section.message_label')}
                     </label>
                     <textarea 
                       required
@@ -252,7 +253,7 @@ const About: React.FC = () => {
                       onChange={(e) => setFormState({...formState, message: e.target.value})}
                       rows={4}
                       className="w-full bg-gray-50 border-b border-gray-200 p-4 outline-none focus:border-comfort-gold transition-all font-light text-sm resize-none"
-                      placeholder="Pourquoi souhaitez-vous nous rejoindre ?"
+                      placeholder={t('join_section.message_placeholder')}
                     />
                   </div>
 
@@ -265,7 +266,7 @@ const About: React.FC = () => {
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                     ) : (
                       <>
-                        <span>{t('join_section.submit')}</span>
+                        <span>{t('join_section.submit_btn')}</span>
                         <ArrowRight size={16} />
                       </>
                     )}
@@ -308,7 +309,7 @@ const About: React.FC = () => {
         <div className="container mx-auto px-6">
           <div className="bg-white border border-gray-100 shadow-2xl p-12 md:p-24 flex flex-col md:flex-row items-center gap-16">
             <div className="flex-1">
-               <h2 className="text-4xl font-serif font-bold text-comfort-blue mb-8">Nous sommes à votre <span className="italic font-light">écoute</span>.</h2>
+               <h2 className="text-4xl font-serif font-bold text-comfort-blue mb-8">{t('about_page.contact_prompt')}</h2>
                <div className="space-y-6">
                   <div className="flex items-center text-gray-500">
                      <MapPin size={20} className="mr-6 text-comfort-gold" />
@@ -326,7 +327,7 @@ const About: React.FC = () => {
             </div>
             <div className="w-full md:w-auto">
                <a href={`mailto:${contactEmail}`} className="inline-block bg-comfort-blue text-white px-12 py-5 font-bold uppercase tracking-widest hover:bg-comfort-gold transition-all duration-500 shadow-xl">
-                  Initier une conversation
+                 {t('about_page.contact_cta')}
                </a>
             </div>
           </div>
