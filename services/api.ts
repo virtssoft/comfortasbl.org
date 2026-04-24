@@ -1,4 +1,3 @@
-
 import { Project, BlogPost, Partner, TeamMember, Testimonial, SiteSettings, Bulletin, SiteStats } from '../types';
 
 export const API_BASE_URL = 'https://api.comfortasbl.org'; 
@@ -24,9 +23,9 @@ export interface ApiAction {
 
 export interface ApiArticle {
   id: string;
-  title: string;
-  content: string;
-  author?: string;
+  titre: string;
+  contenu: string;
+  auteur?: string;
   categorie?: string;
   image_url?: string;
   status?: string;
@@ -34,26 +33,7 @@ export interface ApiArticle {
   views: number;
 }
 
-export interface ApiDonation {
-  id: string;
-  montant: string;
-  donateur_nom: string;
-  email?: string;
-  methode?: string;
-  message?: string;
-  status: 'en_attente' | 'confirmé' | 'annulé';
-  created_at?: string;
-}
-
-export interface ApiPartner {
-  id: string;
-  nom: string;
-  description: string;
-  site_web?: string;
-  logo_url: string;
-  type: string;
-}
-
+// Helper pour les URLs d'images
 const getAbsoluteUrl = (path: string | undefined): string => {
   if (!path) return '';
   if (path.startsWith('http')) return path;
@@ -61,6 +41,7 @@ const getAbsoluteUrl = (path: string | undefined): string => {
   return `${API_BASE_URL}/${cleanPath}`;
 };
 
+// Fetcher générique
 async function fetchData<T>(endpoint: string): Promise<T | null> {
   try {
     const response = await fetch(`${API_BASE_URL}/${endpoint}`);
@@ -71,6 +52,7 @@ async function fetchData<T>(endpoint: string): Promise<T | null> {
   }
 }
 
+// Sender générique (POST, PUT, DELETE)
 async function sendData(endpoint: string, method: 'POST' | 'PUT' | 'DELETE', data?: any) {
     const options: RequestInit = {
         method: method,
@@ -96,13 +78,12 @@ export const api = {
   login: (loginInput: string, passwordInput: string) => 
     sendData('login.php', 'POST', { login: loginInput, password: passwordInput }),
 
-  // Chatbot interne PHP
+  // Chatbot
   askChatbot: (question: string) => sendData('chatbot.php', 'POST', { question }),
 
-  // Forms and Submissions
+  // Forms
   joinAssociation: (data: any) => sendData('adhesions.php', 'POST', data),
   
-  // Volunteer dossier submission (POST /benevoles.php)
   joinVolunteer: async (formData: FormData) => {
     try {
         const response = await fetch(`${API_BASE_URL}/benevoles.php`, {
@@ -115,7 +96,7 @@ export const api = {
     }
   },
 
-  // Media Management
+  // Media
   uploadFile: async (file: File, folder: string = 'uploads') => {
       const formData = new FormData();
       formData.append('file', file);
@@ -131,9 +112,10 @@ export const api = {
       }
   },
 
-  // Data Retrieval
+  // DATA RETRIEVAL
   getStats: () => fetchData<SiteStats>('stats.php'),
 
+  // Projets : Récupération et Mapping
   getProjects: async (): Promise<Project[]> => {
     const actions = await fetchData<any[]>('actions.php');
     if (!actions || !Array.isArray(actions)) return [];
@@ -149,14 +131,15 @@ export const api = {
     }));
   },
 
+  // Blog : Liste (avec texte tronqué pour la performance de la grille)
   getBlogPosts: async (): Promise<BlogPost[]> => {
     const articles = await fetchData<any[]>('articles.php');
     if (!articles || !Array.isArray(articles)) return [];
     return articles.map(a => ({
       id: String(a.id),
-      title: a.title || a.titre,
-      excerpt: a.content ? a.content.substring(0, 150) + '...' : (a.contenu ? a.contenu.substring(0, 150) + '...' : ''),
-      author: a.author || a.auteur || 'Admin',
+      title: a.titre || a.title,
+      excerpt: a.contenu ? a.contenu.substring(0, 150) + '...' : '',
+      author: a.auteur || a.author || 'Admin',
       date: a.created_at?.split(' ')[0] || '',
       category: a.categorie || 'Actualité',
       image: getAbsoluteUrl(a.image_url),
@@ -164,22 +147,27 @@ export const api = {
     }));
   },
 
-getBlogPostsById: async (id: string): Promise<BlogPost | null> => {
-    const a = await fetchData<any>(`articles.php?id=${id}`);
+  // BLOG DÉTAIL : Récupération INTÉGRALE (Pas de troncature ici)
+  getBlogPostsById: async (id: string): Promise<BlogPost | null> => {
+    // Le timestamp force la mise à jour si le texte a changé en DB
+    const a = await fetchData<any>(`articles.php?id=${id}&t=${new Date().getTime()}`);
     if (!a) return null;
     
+    // On récupère le texte complet de la colonne 'contenu' (MEDIUMTEXT)
+    const longContent = a.contenu || a.content || '';
+
     return {
       id: String(a.id),
-      title: a.title || a.titre,
-      // CRITIQUE : Utilise 'contenu' (le nom SQL) et ne fais PAS de .substring ici
-      excerpt: a.contenu || a.content || '', 
-      author: a.author || a.auteur || 'Admin',
+      title: a.titre || a.title,
+      excerpt: longContent, // On met le texte complet ici
+      content: longContent, // On l'ajoute aussi ici pour la compatibilité DetailPage
+      author: a.auteur || a.author || 'Admin',
       date: a.created_at?.split(' ')[0] || '',
       category: a.categorie || 'Actualité',
       image: getAbsoluteUrl(a.image_url),
       views: a.views || 0
     };
-},
+  },
 
   getBulletins: async (): Promise<Bulletin[]> => {
     const res = await fetchData<Bulletin[]>('bulletins.php');
@@ -198,34 +186,29 @@ getBlogPostsById: async (id: string): Promise<BlogPost | null> => {
     }));
   },
 
-  // Added methods for donations
+  // GESTION (Admin)
   sendDonation: (data: any) => sendData('donations.php', 'POST', data),
   getDonations: () => fetchData<ApiDonation[]>('donations.php').then(d => d || []),
   deleteDonation: (id: string) => sendData(`donations.php?id=${id}`, 'DELETE'),
   updateDonationStatus: (id: string, status: string) => sendData(`donations.php?id=${id}`, 'PUT', { status }),
 
-  // Added methods for user management
   getUsers: () => fetchData<ApiUser[]>('users.php').then(d => d || []),
   deleteUser: (id: string) => sendData(`users.php?id=${id}`, 'DELETE'),
   updateUser: (id: string, data: any) => sendData(`users.php?id=${id}`, 'PUT', data),
   createUser: (data: any) => sendData('users.php', 'POST', data),
 
-  // Added methods for actions/projects management
   deleteAction: (id: string) => sendData(`actions.php?id=${id}`, 'DELETE'),
   updateAction: (id: string, data: any) => sendData(`actions.php?id=${id}`, 'PUT', data),
   createAction: (data: any) => sendData('actions.php', 'POST', data),
   
-  // Added methods for articles/blog management (Udpated for views support)
   deleteArticle: (id: string) => sendData(`articles.php?id=${id}`, 'DELETE'),
   updateArticle: (id: string, data: any) => sendData(`articles.php?id=${id}`, 'PUT', data),
   createArticle: (data: any) => sendData('articles.php', 'POST', data),
   
-  // Added methods for partners management
   deletePartner: (id: string) => sendData(`partners.php?id=${id}`, 'DELETE'),
   updatePartner: (id: string, data: any) => sendData(`partners.php?id=${id}`, 'PUT', data),
   createPartner: (data: any) => sendData('partners.php', 'POST', data),
 
-  // Bulletins & Testimonials (Updated for the new endpoint)
   deleteBulletin: (id: string) => sendData(`bulletins.php?id=${id}`, 'DELETE'),
   updateBulletin: (id: string, data: any) => sendData(`bulletins.php?id=${id}`, 'PUT', data),
   createBulletin: async (formData: FormData) => {
