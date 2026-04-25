@@ -21,7 +21,7 @@ import { AuthProvider } from './context/AuthContext';
 import { Calendar, ArrowLeft, Eye, Bookmark } from 'lucide-react';
 import { api } from './services/api';
 
-// --- UTILITAIRE : Scroll en haut ---
+// --- UTILITAIRE : Scroll en haut lors du changement de page ---
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -30,7 +30,7 @@ const ScrollToTop = () => {
   return null;
 };
 
-// --- COMPOSANT : Détail Dynamique (SEO & Traduction optimisés) ---
+// --- COMPOSANT : Détail Dynamique (Projets & Blog) ---
 const DetailPage = ({ type }: { type: 'project' | 'blog' }) => {
     const { id } = useParams<{ id: string }>();
     const { projects, blogPosts, loading: contextLoading } = useData();
@@ -48,7 +48,7 @@ const DetailPage = ({ type }: { type: 'project' | 'blog' }) => {
                     const data = await api.getBlogPostsById(id);
                     if (data) {
                         setFullItem(data);
-                        // SEO : Mise à jour dynamique du titre du document
+                        // Mise à jour du titre du document pour le SEO
                         document.title = `${data.title} | Blog COMFORT`;
                     }
                 } else {
@@ -59,11 +59,12 @@ const DetailPage = ({ type }: { type: 'project' | 'blog' }) => {
                     }
                 }
             } catch (error) {
-                console.error("Erreur de chargement:", error);
+                console.error("Erreur de chargement du contenu:", error);
             } finally {
                 setFetching(false);
             }
         };
+
         loadFullData();
     }, [id, type, projects]);
 
@@ -93,7 +94,7 @@ const DetailPage = ({ type }: { type: 'project' | 'blog' }) => {
 
     return (
         <div className="bg-white min-h-screen pb-20 animate-in fade-in duration-700">
-            {/* Hero Image Detail */}
+            {/* Header Image Section */}
             <div className="relative h-[55vh] md:h-[70vh] w-full bg-comfort-dark overflow-hidden">
                 <img src={item.image} alt={item.title} className="w-full h-full object-cover opacity-50 scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-white via-comfort-dark/20 to-transparent"></div>
@@ -118,7 +119,7 @@ const DetailPage = ({ type }: { type: 'project' | 'blog' }) => {
                 </div>
             </div>
 
-            {/* Content Section */}
+            {/* Main Content */}
             <div className="container mx-auto px-6 mt-20">
                 <div className="grid lg:grid-cols-12 gap-20">
                     <div className="lg:col-span-8">
@@ -136,7 +137,7 @@ const DetailPage = ({ type }: { type: 'project' | 'blog' }) => {
                     </div>
 
                     <aside className="lg:col-span-4">
-                        <div className="bg-comfort-light p-10 sticky top-32 border-t-4 border-comfort-gold">
+                        <div className="bg-comfort-light p-10 sticky top-32 border-t-4 border-comfort-gold shadow-sm">
                             <h4 className="font-serif font-bold text-comfort-blue text-xl mb-8 border-b border-gray-200 pb-4">
                                 {t('common.impact')}
                             </h4>
@@ -163,10 +164,9 @@ const DetailPage = ({ type }: { type: 'project' | 'blog' }) => {
     );
 };
 
-// --- ROUTER & LAYOUT ---
+// --- ROUTER & LAYOUT PRINCIPAL ---
 const AppContent = () => {
     const { loading } = useData();
-    const { t } = useLanguage();
 
     return (
         <>
@@ -178,15 +178,14 @@ const AppContent = () => {
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/about" element={<About />} />
+                        
+                        {/* 🛠️ Routes Projets avec Slug Optionnel */}
                         <Route path="/projects" element={<Projects />} />
+                        <Route path="/projects/:id/:slug?" element={<DetailPage type="project" />} />
                         
-                        {/* ROUTES SEO-READY AVEC SLUG OPTIONNEL */}
-                        <Route path="/projects/:id" element={<DetailPage type="project" />} />
-                        <Route path="/projects/:id/:slug" element={<DetailPage type="project" />} />
-                        
+                        {/* 🛠️ Routes Blog avec Slug Optionnel - Correction de la redirection */}
                         <Route path="/blog" element={<Blog />} />
-                        <Route path="/blog/:id" element={<DetailPage type="blog" />} />
-                        <Route path="/blog/:id/:slug" element={<DetailPage type="blog" />} />
+                        <Route path="/blog/:id/:slug?" element={<DetailPage type="blog" />} />
                         
                         <Route path="/bulletins" element={<Bulletins />} />
                         <Route path="/partners" element={<PartnersPage />} />
@@ -194,6 +193,8 @@ const AppContent = () => {
                         <Route path="/account" element={<Account />} />
                         <Route path="/admin" element={<AdminDashboard />} />
                         <Route path="/virtssoft-impact" element={<VirtssoftImpact />} />
+                        
+                        {/* Catch-all vers Home */}
                         <Route path="*" element={<Home />} />
                     </Routes>
                 </main>
