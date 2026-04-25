@@ -48,7 +48,6 @@ const DetailPage = ({ type }: { type: 'project' | 'blog' }) => {
                     const data = await api.getBlogPostsById(id);
                     if (data) {
                         setFullItem(data);
-                        // Mise à jour du titre du document pour le SEO
                         document.title = `${data.title} | Blog COMFORT`;
                     }
                 } else {
@@ -95,43 +94,46 @@ const DetailPage = ({ type }: { type: 'project' | 'blog' }) => {
     return (
         <div className="bg-white min-h-screen pb-20 animate-in fade-in duration-700">
             {/* Header Image Section */}
-            <div className="relative h-[55vh] md:h-[70vh] w-full bg-comfort-dark overflow-hidden">
-                <img src={item.image} alt={item.title} className="w-full h-full object-cover opacity-50 scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-white via-comfort-dark/20 to-transparent"></div>
+            <div className="relative h-[50vh] md:h-[65vh] w-full bg-comfort-dark overflow-hidden">
+                <img src={item.image} alt={item.title} className="w-full h-full object-cover scale-105" />
+                <div className="absolute inset-0 bg-black/30"></div>
                 
                 <div className="container absolute bottom-0 left-1/2 -translate-x-1/2 px-6 pb-12 z-10">
-                    <Link to={type === 'project' ? "/projects" : "/blog"} className="inline-flex items-center text-comfort-blue font-bold text-[10px] uppercase tracking-[0.3em] mb-8 hover:text-comfort-gold transition-colors">
+                    <Link to={type === 'project' ? "/projects" : "/blog"} className="inline-flex items-center text-white font-bold text-[10px] uppercase tracking-[0.3em] mb-6 hover:text-comfort-gold transition-colors drop-shadow-lg">
                         <ArrowLeft size={14} className="mr-3" /> {t('common.back')}
                     </Link>
                     
-                    <div className="flex items-center gap-6 mb-6">
-                        <span className="bg-comfort-gold text-white px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest shadow-xl">
-                            {item.category}
-                        </span>
-                        <span className="flex items-center text-comfort-blue font-bold text-[10px] uppercase tracking-widest">
-                            <Calendar size={14} className="mr-2 text-comfort-gold" /> {item.date}
-                        </span>
-                    </div>
+                    {/* Bloc Titre avec fond blanc semi-opaque */}
+                    <div className="bg-white/90 backdrop-blur-md p-6 md:p-10 max-w-4xl shadow-2xl border-l-8 border-comfort-gold">
+                        <div className="flex flex-wrap items-center gap-6 mb-4">
+                            <span className="bg-comfort-blue text-white px-4 py-1.5 text-[9px] font-bold uppercase tracking-widest shadow-sm">
+                                {item.category}
+                            </span>
+                            <span className="flex items-center text-comfort-blue font-bold text-[9px] uppercase tracking-widest">
+                                <Calendar size={13} className="mr-2 text-comfort-gold" /> {item.date}
+                            </span>
+                        </div>
 
-                    <h1 className="text-4xl md:text-6xl font-serif font-bold text-comfort-blue leading-[1.1] max-w-5xl">
-                        {item.title}
-                    </h1>
+                        <h1 className="text-2xl md:text-4xl font-serif font-bold text-comfort-blue leading-tight uppercase tracking-tight">
+                            {item.title}
+                        </h1>
+                    </div>
                 </div>
             </div>
 
             {/* Main Content */}
-            <div className="container mx-auto px-6 mt-20">
-                <div className="grid lg:grid-cols-12 gap-20">
+            <div className="container mx-auto px-6 mt-16">
+                <div className="grid lg:grid-cols-12 gap-16">
                     <div className="lg:col-span-8">
                         <div 
-                            className="prose prose-lg md:prose-xl max-w-none text-gray-700 font-light leading-relaxed first-letter:text-5xl first-letter:font-serif first-letter:text-comfort-gold first-letter:mr-3 first-letter:float-left"
+                            className="prose prose-lg md:prose-xl max-w-none text-gray-700 font-light leading-relaxed first-letter:text-6xl first-letter:font-serif first-letter:text-comfort-gold first-letter:mr-3 first-letter:float-left"
                             dangerouslySetInnerHTML={{ __html: displayContent }}
                         />
                         
                         {fetching && (
                             <div className="mt-12 flex items-center space-x-3 text-comfort-gold">
                                 <div className="w-4 h-4 border-2 border-comfort-gold border-t-transparent rounded-full animate-spin"></div>
-                                <span className="text-[10px] font-bold uppercase tracking-widest">Sync...</span>
+                                <span className="text-[10px] font-bold uppercase tracking-widest">Mise à jour en cours...</span>
                             </div>
                         )}
                     </div>
@@ -172,29 +174,22 @@ const AppContent = () => {
         <>
             {loading && <LoadingOverlay />}
             <ScrollToTop />
-            <div className={`transition-opacity duration-1000 ${loading ? 'opacity-0' : 'opacity-100'}`}>
+            <div className={`transition-opacity duration-1000 ${loading ? 'opacity-0' : 'opacity-100'} flex flex-col min-h-screen`}>
                 <Header />
                 <main className="flex-grow">
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/about" element={<About />} />
-                        
-                        {/* 🛠️ Routes Projets avec Slug Optionnel */}
                         <Route path="/projects" element={<Projects />} />
                         <Route path="/projects/:id/:slug?" element={<DetailPage type="project" />} />
-                        
-                        {/* 🛠️ Routes Blog avec Slug Optionnel - Correction de la redirection */}
                         <Route path="/blog" element={<Blog />} />
                         <Route path="/blog/:id/:slug?" element={<DetailPage type="blog" />} />
-                        
                         <Route path="/bulletins" element={<Bulletins />} />
                         <Route path="/partners" element={<PartnersPage />} />
                         <Route path="/donate" element={<Donate />} />
                         <Route path="/account" element={<Account />} />
                         <Route path="/admin" element={<AdminDashboard />} />
                         <Route path="/virtssoft-impact" element={<VirtssoftImpact />} />
-                        
-                        {/* Catch-all vers Home */}
                         <Route path="*" element={<Home />} />
                     </Routes>
                 </main>
@@ -212,9 +207,7 @@ const App: React.FC = () => {
       <AuthProvider>
         <DataProvider>
             <Router>
-                <div className="flex flex-col min-h-screen">
-                    <AppContent />
-                </div>
+                <AppContent />
             </Router>
         </DataProvider>
       </AuthProvider>
