@@ -86,11 +86,23 @@ export const translations = {
       archive_description: "Consultez nos rapports d'intervention classés par catégorie.",
       view_details: 'Voir les détails'
     },
+    blog_page: {
+      title: "Dernières Actualités",
+      subtitle: "Suivez l'impact de nos actions sur le terrain à travers nos articles et reportages."
+    },
     bulletin: {
       official_comm: "Communication Officielle",
       title_part1: "Le Bulletin",
       title_part2: "d'Information",
       description: "Archives institutionnelles de COMFORT Asbl au format PDF.",
+    },
+    bank: {
+      title: "Soutien Bancaire",
+      account_name_label: "Intitulé du compte",
+      account_name: "COMFORT ASBL",
+      bank_name_label: "Institution Bancaire",
+      bank_name: "EquityBCDC",
+      account_number_label: "Numéro de compte (CDF/USD)"
     },
     donate: {
       tag: "Acte de Solidarité",
@@ -224,11 +236,23 @@ export const translations = {
       archive_description: "Consult our intervention reports classified by category.",
       view_details: 'View details'
     },
+    blog_page: {
+      title: "Latest News",
+      subtitle: "Follow our impact on the ground through our articles and reports."
+    },
     bulletin: {
       official_comm: "Official Communication",
       title_part1: "The Info",
       title_part2: "Bulletin",
       description: "Institutional archives of COMFORT Asbl in PDF format.",
+    },
+    bank: {
+      title: "Banking Support",
+      account_name_label: "Account Name",
+      account_name: "COMFORT ASBL",
+      bank_name_label: "Banking Institution",
+      bank_name: "EquityBCDC",
+      account_number_label: "Account Number (CDF/USD)"
     },
     donate: {
       tag: "Act of Solidarity",
@@ -355,6 +379,18 @@ export const translations = {
       message_label: "SABABU",
       message_placeholder: "Kwa nini unataka kujiunga nasi?",
       submit_btn: "Tuma ombi langu"
+    },
+    blog_page: {
+      title: "Habari za Hivi Karibuni",
+      subtitle: "Fuatilia athari za matendo yetu kupitia makala na ripoti zetu."
+    },
+    bank: {
+      title: "Usaidizi wa Benki",
+      account_name_label: "Jina la Akaunti",
+      account_name: "COMFORT ASBL",
+      bank_name_label: "Taasisi ya Benki",
+      bank_name: "EquityBCDC",
+      account_number_label: "Nambari ya Akaunti (CDF/USD)"
     },
     contact: {
       title: 'Wasiliana Nasi',
