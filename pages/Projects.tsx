@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
@@ -22,10 +21,14 @@ const Projects: React.FC = () => {
       <div className="py-32 bg-comfort-light border-b border-gray-100">
         <div className="container mx-auto px-6">
             <div className="max-w-3xl">
-              <span className="text-comfort-gold font-bold uppercase tracking-[0.3em] text-xs mb-4 block">Archive des Actions</span>
-              <h1 className="text-5xl md:text-6xl font-serif font-bold text-comfort-blue mb-8 leading-tight">Nos Engagements & Impact Réel</h1>
+              <span className="text-comfort-gold font-bold uppercase tracking-[0.3em] text-xs mb-4 block">
+                {t('projects_page.subtitle') || "Archive des Actions"}
+              </span>
+              <h1 className="text-5xl md:text-6xl font-serif font-bold text-comfort-blue mb-8 leading-tight">
+                {t('projects_page.hero_title') || "Nos Engagements & Impact Réel"}
+              </h1>
               <p className="text-xl text-gray-500 font-light leading-relaxed">
-                Consultez nos rapports d'intervention classés par catégorie. Chaque projet est une promesse tenue envers les communautés vulnérables.
+                {t('projects_page.hero_description') || "Consultez nos rapports d'intervention classés par catégorie. Chaque projet est une promesse tenue envers les communautés vulnérables."}
               </p>
             </div>
         </div>
@@ -51,7 +54,10 @@ const Projects: React.FC = () => {
                         </div>
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
-                                <span className="text-comfort-gold font-bold text-[10px] uppercase tracking-[0.2em]">{project.category}</span>
+                                <span className="text-comfort-gold font-bold text-[10px] uppercase tracking-[0.2em]">
+                                  {/* Si la catégorie est traduite dans ton JSON, utilise t(project.category) */}
+                                  {project.category}
+                                </span>
                                 <div className="flex items-center text-[10px] text-gray-400 font-bold uppercase">
                                     <Calendar size={12} className="mr-2" /> {project.date}
                                 </div>
@@ -63,7 +69,8 @@ const Projects: React.FC = () => {
                                 {project.description}
                             </p>
                             <Link to={`/projects/${project.id}`} className="inline-flex items-center text-comfort-blue font-bold text-xs uppercase tracking-widest group/btn">
-                                {t('projects.view_details')} <ArrowRight size={14} className="ml-3 group-hover/btn:translate-x-3 transition-transform text-comfort-gold" />
+                                {t('projects.view_details') || "Voir les détails"} 
+                                <ArrowRight size={14} className="ml-3 group-hover/btn:translate-x-3 transition-transform text-comfort-gold" />
                             </Link>
                         </div>
                     </div>
@@ -72,7 +79,9 @@ const Projects: React.FC = () => {
             ) : (
                 <div className="text-center py-40 border-2 border-dashed border-gray-100 rounded-lg">
                     <Bookmark size={48} className="mx-auto text-gray-200 mb-4" />
-                    <p className="text-gray-400 font-serif italic text-xl">Aucun rapport d'action disponible pour le moment.</p>
+                    <p className="text-gray-400 font-serif italic text-xl">
+                      {t('projects_page.no_projects') || "Aucun rapport d'action disponible pour le moment."}
+                    </p>
                 </div>
             )}
         </div>
