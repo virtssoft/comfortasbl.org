@@ -55,17 +55,15 @@ async function fetchData<T>(endpoint: string): Promise<T | null> {
 }
 
 /**
- * Sender universel amélioré : 
- * Gère automatiquement le JSON ou le FormData (pour les fichiers)
+ * Sender universel : 
+ * Gère automatiquement le JSON (objets) ou le FormData (fichiers/CV)
  */
 async function sendData(endpoint: string, method: 'POST' | 'PUT' | 'DELETE', data?: any) {
     const isFormData = data instanceof FormData;
     
-    // Initialisation des options de la requête
     const options: RequestInit = {
         method: method,
-        // CRITIQUE : Si c'est du FormData, on laisse le navigateur définir le Content-Type
-        // pour qu'il inclue le "boundary" correct.
+        // On ne met PAS de Content-Type pour le FormData (le navigateur le gère)
         headers: isFormData ? {} : { 
             'Content-Type': 'application/json',
             'Accept': 'application/json'
@@ -79,7 +77,7 @@ async function sendData(endpoint: string, method: 'POST' | 'PUT' | 'DELETE', dat
     try {
         const response = await fetch(`${API_BASE_URL}/${endpoint}`, options);
         
-        // On vérifie d'abord si la réponse est du JSON
+        // Vérification si la réponse est du JSON
         const contentType = response.headers.get("content-type");
         if (contentType && contentType.indexOf("application/json") !== -1) {
             return await response.json();
@@ -88,12 +86,12 @@ async function sendData(endpoint: string, method: 'POST' | 'PUT' | 'DELETE', dat
             return { success: response.ok, message: text };
         }
     } catch (e) {
-        console.error("API Error:", e);
-        return { success: false, error: "Impossible de joindre le serveur. Vérifiez votre connexion." };
+        console.error("Erreur API:", e);
+        return { success: false, error: "Impossible de joindre le serveur. Vérifiez la configuration du fichier PHP ou votre connexion." };
     }
 }
 
-// --- API Object ---
+// --- Objet API Principal ---
 
 export const api = {
   // Authentication
@@ -103,13 +101,12 @@ export const api = {
   // Chatbot
   askChatbot: (question: string) => sendData('chatbot.php', 'POST', { question }),
 
-  // --- FORMULAIRES (Adhésions / Bénévoles) ---
-  // Ces méthodes acceptent désormais le FormData envoyé par About.tsx
-  joinAssociation: (data: FormData | any) => sendData('adhesions.php', 'POST', data),
-  
+  // --- FORMULAIRES D'INSCRIPTION ---
+  // On utilise benevoles.php pour les deux types d'adhésion
+  joinAssociation: (data: FormData | any) => sendData('benevoles.php', 'POST', data),
   joinVolunteer: (formData: FormData) => sendData('benevoles.php', 'POST', formData),
 
-  // Media & Uploads
+  // Media
   uploadFile: (file: File, folder: string = 'uploads') => {
       const formData = new FormData();
       formData.append('file', file);
@@ -117,10 +114,9 @@ export const api = {
       return sendData('upload.php', 'POST', formData);
   },
 
-  // Data Retrieval
+  // DATA RETRIEVAL
   getStats: () => fetchData<SiteStats>('stats.php'),
 
-  // Projets
   getProjects: async (): Promise<Project[]> => {
     const actions = await fetchData<any[]>('actions.php');
     if (!actions || !Array.isArray(actions)) return [];
@@ -136,7 +132,6 @@ export const api = {
     }));
   },
 
-  // Blog (Grille)
   getBlogPosts: async (): Promise<BlogPost[]> => {
     const articles = await fetchData<any[]>('articles.php');
     if (!articles || !Array.isArray(articles)) return [];
@@ -152,7 +147,6 @@ export const api = {
     }));
   },
 
-  // Blog (Détail complet)
   getBlogPostsById: async (id: string): Promise<BlogPost | null> => {
     const a = await fetchData<any>(`articles.php?id=${id}&t=${new Date().getTime()}`);
     if (!a) return null;
@@ -188,7 +182,7 @@ export const api = {
     }));
   },
 
-  // Admin / Management
+  // --- GESTION ADMIN ---
   sendDonation: (data: any) => sendData('donations.php', 'POST', data),
   getDonations: () => fetchData<any[]>('donations.php').then(d => d || []),
   deleteDonation: (id: string) => sendData(`donations.php?id=${id}`, 'DELETE'),
