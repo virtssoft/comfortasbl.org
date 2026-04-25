@@ -11,6 +11,14 @@ import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { HeroSkeleton, CardSkeleton } from '../components/Skeletons';
 
+// Utilitaire pour créer des slugs valides
+const createSlug = (title: string) => {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)+/g, '');
+};
+
 const Home: React.FC = () => {
   const { t } = useLanguage();
   const { projects, partners, blogPosts, testimonials, loading } = useData();
@@ -106,7 +114,8 @@ const Home: React.FC = () => {
                   {post.excerpt}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Link to={`/blog/${post.id}`} className="bg-comfort-gold text-white px-10 py-4 font-bold uppercase tracking-widest hover:bg-white hover:text-comfort-dark transition-all text-center text-[10px]">{t('common.more')}</Link>
+                  {/* Mise à jour du lien pour inclure l'ID et le Slug */}
+                  <Link to={`/blog/${post.id}/${createSlug(post.title)}`} className="bg-comfort-gold text-white px-10 py-4 font-bold uppercase tracking-widest hover:bg-white hover:text-comfort-dark transition-all text-center text-[10px]">{t('common.more')}</Link>
                   <Link to="/donate" className="border border-white/30 text-white px-10 py-4 font-bold uppercase tracking-widest hover:bg-white/10 transition-all text-center text-[10px]">{t('nav.donate')}</Link>
                 </div>
               </div>
@@ -198,9 +207,9 @@ const Home: React.FC = () => {
                                   <span className="flex items-center"><User size={12} className="mr-1"/> {post.author}</span>
                               </div>
                               <h3 className="text-lg font-bold text-gray-900 mb-3 group-hover:text-comfort-blue transition-colors leading-snug">
-                                  <Link to={`/blog/${post.id}`}>{post.title}</Link>
+                                  <Link to={`/blog/${post.id}/${createSlug(post.title)}`}>{post.title}</Link>
                               </h3>
-                              <Link to={`/blog/${post.id}`} className="text-comfort-blue font-bold text-[10px] uppercase flex items-center hover:underline">
+                              <Link to={`/blog/${post.id}/${createSlug(post.title)}`} className="text-comfort-blue font-bold text-[10px] uppercase flex items-center hover:underline">
                                   {t('common.more')} <ArrowRight size={14} className="ml-2" />
                               </Link>
                           </div>
@@ -229,17 +238,17 @@ const Home: React.FC = () => {
 
       {/* 🏛️ SECTION 6: PARTENAIRES */}
       <section className="py-16 bg-white border-t border-gray-100 overflow-hidden relative">
-         <div className="container mx-auto px-4 mb-8 text-center">
-             <h3 className="text-[10px] font-serif font-bold text-gray-400 uppercase tracking-[0.5em]">{t('nav.partners')}</h3>
-         </div>
-         <div className="flex w-max animate-marquee items-center py-4">
+          <div className="container mx-auto px-4 mb-8 text-center">
+              <h3 className="text-[10px] font-serif font-bold text-gray-400 uppercase tracking-[0.5em]">{t('nav.partners')}</h3>
+          </div>
+          <div className="flex w-max animate-marquee items-center py-4">
             {[...partners, ...partners].map((p, idx) => (
                 <div key={idx} className="w-48 flex items-center justify-center shrink-0 mx-12 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
                     <img src={p.logo} alt={p.name} className="max-h-12 w-auto object-contain" />
                 </div>
             ))}
-         </div>
-         <style>{`@keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } } .animate-marquee { animation: marquee 30s linear infinite; }`}</style>
+          </div>
+          <style>{`@keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } } .animate-marquee { animation: marquee 30s linear infinite; }`}</style>
       </section>
 
       {/* 🏛️ SECTION 7: CTA DONATION */}
