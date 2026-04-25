@@ -2,6 +2,8 @@ import { Project, BlogPost, Partner, TeamMember, Testimonial, SiteSettings, Bull
 
 export const API_BASE_URL = 'https://api.comfortasbl.org'; 
 
+// --- Interfaces ---
+
 export interface ApiUser {
   id: string;
   username: string;
@@ -33,7 +35,8 @@ export interface ApiArticle {
   views: number;
 }
 
-// Helper pour les URLs d'images
+// --- Helpers ---
+
 const getAbsoluteUrl = (path: string | undefined): string => {
   if (!path) return '';
   if (path.startsWith('http')) return path;
@@ -41,7 +44,6 @@ const getAbsoluteUrl = (path: string | undefined): string => {
   return `${API_BASE_URL}/${cleanPath}`;
 };
 
-// Fetcher générique
 async function fetchData<T>(endpoint: string): Promise<T | null> {
   try {
     const response = await fetch(`${API_BASE_URL}/${endpoint}`);
@@ -52,26 +54,46 @@ async function fetchData<T>(endpoint: string): Promise<T | null> {
   }
 }
 
-// Sender générique (POST, PUT, DELETE)
+/**
+ * Sender universel amélioré : 
+ * Gère automatiquement le JSON ou le FormData (pour les fichiers)
+ */
 async function sendData(endpoint: string, method: 'POST' | 'PUT' | 'DELETE', data?: any) {
+    const isFormData = data instanceof FormData;
+    
+    // Initialisation des options de la requête
     const options: RequestInit = {
         method: method,
-        headers: { 'Content-Type': 'application/json' }
+        // CRITIQUE : Si c'est du FormData, on laisse le navigateur définir le Content-Type
+        // pour qu'il inclue le "boundary" correct.
+        headers: isFormData ? {} : { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
     };
-    if (data) options.body = JSON.stringify(data);
+
+    if (data) {
+        options.body = isFormData ? data : JSON.stringify(data);
+    }
 
     try {
         const response = await fetch(`${API_BASE_URL}/${endpoint}`, options);
-        const text = await response.text();
-        try {
-            return JSON.parse(text);
-        } catch {
+        
+        // On vérifie d'abord si la réponse est du JSON
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+            return await response.json();
+        } else {
+            const text = await response.text();
             return { success: response.ok, message: text };
         }
     } catch (e) {
-        return { success: false, error: "Erreur de connexion" };
+        console.error("API Error:", e);
+        return { success: false, error: "Impossible de joindre le serveur. Vérifiez votre connexion." };
     }
 }
+
+// --- API Object ---
 
 export const api = {
   // Authentication
@@ -81,41 +103,24 @@ export const api = {
   // Chatbot
   askChatbot: (question: string) => sendData('chatbot.php', 'POST', { question }),
 
-  // Forms
-  joinAssociation: (data: any) => sendData('adhesions.php', 'POST', data),
+  // --- FORMULAIRES (Adhésions / Bénévoles) ---
+  // Ces méthodes acceptent désormais le FormData envoyé par About.tsx
+  joinAssociation: (data: FormData | any) => sendData('adhesions.php', 'POST', data),
   
-  joinVolunteer: async (formData: FormData) => {
-    try {
-        const response = await fetch(`${API_BASE_URL}/benevoles.php`, {
-            method: 'POST',
-            body: formData
-        });
-        return await response.json();
-    } catch (e) {
-        return { success: false, error: "Erreur d'envoi du dossier" };
-    }
-  },
+  joinVolunteer: (formData: FormData) => sendData('benevoles.php', 'POST', formData),
 
-  // Media
-  uploadFile: async (file: File, folder: string = 'uploads') => {
+  // Media & Uploads
+  uploadFile: (file: File, folder: string = 'uploads') => {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('folder', folder); 
-      try {
-          const response = await fetch(`${API_BASE_URL}/upload.php`, {
-              method: 'POST',
-              body: formData
-          });
-          return await response.json();
-      } catch (e) {
-          return { success: false, error: "Erreur upload" };
-      }
+      return sendData('upload.php', 'POST', formData);
   },
 
-  // DATA RETRIEVAL
+  // Data Retrieval
   getStats: () => fetchData<SiteStats>('stats.php'),
 
-  // Projets : Récupération et Mapping
+  // Projets
   getProjects: async (): Promise<Project[]> => {
     const actions = await fetchData<any[]>('actions.php');
     if (!actions || !Array.isArray(actions)) return [];
@@ -131,7 +136,7 @@ export const api = {
     }));
   },
 
-  // Blog : Liste (avec texte tronqué pour la performance de la grille)
+  // Blog (Grille)
   getBlogPosts: async (): Promise<BlogPost[]> => {
     const articles = await fetchData<any[]>('articles.php');
     if (!articles || !Array.isArray(articles)) return [];
@@ -147,20 +152,17 @@ export const api = {
     }));
   },
 
-  // BLOG DÉTAIL : Récupération INTÉGRALE (Pas de troncature ici)
+  // Blog (Détail complet)
   getBlogPostsById: async (id: string): Promise<BlogPost | null> => {
-    // Le timestamp force la mise à jour si le texte a changé en DB
     const a = await fetchData<any>(`articles.php?id=${id}&t=${new Date().getTime()}`);
     if (!a) return null;
     
-    // On récupère le texte complet de la colonne 'contenu' (MEDIUMTEXT)
     const longContent = a.contenu || a.content || '';
-
     return {
       id: String(a.id),
       title: a.titre || a.title,
-      excerpt: longContent, // On met le texte complet ici
-      content: longContent, // On l'ajoute aussi ici pour la compatibilité DetailPage
+      excerpt: longContent,
+      content: longContent,
       author: a.auteur || a.author || 'Admin',
       date: a.created_at?.split(' ')[0] || '',
       category: a.categorie || 'Actualité',
@@ -186,9 +188,9 @@ export const api = {
     }));
   },
 
-  // GESTION (Admin)
+  // Admin / Management
   sendDonation: (data: any) => sendData('donations.php', 'POST', data),
-  getDonations: () => fetchData<ApiDonation[]>('donations.php').then(d => d || []),
+  getDonations: () => fetchData<any[]>('donations.php').then(d => d || []),
   deleteDonation: (id: string) => sendData(`donations.php?id=${id}`, 'DELETE'),
   updateDonationStatus: (id: string, status: string) => sendData(`donations.php?id=${id}`, 'PUT', { status }),
 
@@ -211,17 +213,7 @@ export const api = {
 
   deleteBulletin: (id: string) => sendData(`bulletins.php?id=${id}`, 'DELETE'),
   updateBulletin: (id: string, data: any) => sendData(`bulletins.php?id=${id}`, 'PUT', data),
-  createBulletin: async (formData: FormData) => {
-    try {
-        const response = await fetch(`${API_BASE_URL}/bulletins.php`, {
-            method: 'POST',
-            body: formData
-        });
-        return await response.json();
-    } catch (e) {
-        return { success: false, error: "Erreur d'envoi du bulletin" };
-    }
-  },
+  createBulletin: (formData: FormData) => sendData('bulletins.php', 'POST', formData),
 
   getTestimonials: () => fetchData<Testimonial[]>('testimonials.php').then(d => d || []),
   deleteTestimonial: (id: string) => sendData(`testimonials.php?id=${id}`, 'DELETE'),
@@ -229,10 +221,10 @@ export const api = {
 
   getRawActions: () => fetchData<ApiAction[]>('actions.php').then(d => d || []),
   getRawArticles: () => fetchData<ApiArticle[]>('articles.php').then(d => d || []),
-  getRawPartners: () => fetchData<ApiPartner[]>('partners.php').then(d => d || []),
+  getRawPartners: () => fetchData<any[]>('partners.php').then(d => d || []),
   
   getSettings: () => fetchData<SiteSettings>('settings.php'),
   getTeam: () => fetchData<TeamMember[]>('team.php').then(d => d || []),
 
-  sendData
+  sendData 
 };
