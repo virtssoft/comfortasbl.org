@@ -251,7 +251,7 @@ export const translations = {
       account_name_label: "Account Name",
       account_name: "COMFORT ASBL",
       bank_name_label: "Banking Institution",
-      bank_name: "EquityBCDC",
+      bank_name: "TMB",
       account_number_label: "Account Number (CDF/USD)"
     },
     donate: {
@@ -268,7 +268,7 @@ export const translations = {
       acc_name_label: "Account Name",
       bank_label: "Bank",
       currency_label: "Currency",
-      swift_label: "Swift / BIC",
+      swift_label: "Swift ",
       acc_num_label: "Account Number",
       confirm_btn: "Confirm donation",
       security_protocol: "Institutional security protocol active",
@@ -389,7 +389,7 @@ export const translations = {
       account_name_label: "Jina la Akaunti",
       account_name: "COMFORT ASBL",
       bank_name_label: "Taasisi ya Benki",
-      bank_name: "EquityBCDC",
+      bank_name: "TMB",
       account_number_label: "Nambari ya Akaunti (CDF/USD)"
     },
     contact: {
