@@ -101,7 +101,7 @@ export const translations = {
       account_name_label: "Intitulé du compte",
       account_name: "COMFORT ASBL",
       bank_name_label: "Institution Bancaire",
-      bank_name: "EquityBCDC",
+      bank_name: "TMB",
       account_number_label: "Numéro de compte (CDF/USD)"
     },
     donate: {
@@ -118,7 +118,7 @@ export const translations = {
       acc_name_label: "Intitulé de compte",
       bank_label: "Banque",
       currency_label: "Devise",
-      swift_label: "Swift / BIC",
+      swift_label: "Swift ",
       acc_num_label: "Numéro de compte",
       confirm_btn: "Confirmer l'acte de don",
       security_protocol: "Protocole de sécurité institutionnel actif",
