@@ -1,15 +1,13 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { api } from '../services/api';
-import { Project, BlogPost, Partner, TeamMember, Testimonial, SiteSettings, Bulletin, SiteStats } from '../types';
+import { Project, BlogPost, Partner, TeamMember, Testimonial, SiteSettings } from '../types';
 
 interface DataContextType {
   settings: SiteSettings | null;
   projects: Project[];
   blogPosts: BlogPost[];
-  bulletins: Bulletin[];
   partners: Partner[];
-  stats: SiteStats | null;
-  teamMembers: TeamMember[];
+  teamMembers: TeamMember[]; // Utilisé pour l'équipe
   testimonials: Testimonial[];
   loading: boolean;
   refreshData: () => void;
@@ -22,79 +20,75 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [settings, setSettings] = useState<SiteSettings | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
-  const [bulletins, setBulletins] = useState<Bulletin[]>([]);
   const [partners, setPartners] = useState<Partner[]>([]);
-  const [stats, setStats] = useState<SiteStats | null>(null);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
 
-  // Fonction utilitaire pour précharger les images (Carousel)
   const preloadImage = (url: string): Promise<void> => {
     return new Promise((resolve) => {
       const img = new Image();
       img.src = url;
       img.onload = () => resolve();
-      img.onerror = () => resolve(); // On résout quand même pour ne pas bloquer le loading
+      img.onerror = () => resolve(); 
     });
   };
 
-  const loadData = useCallback(async () => {
+  const loadData = async () => {
     setLoading(true);
     try {
       const results = await Promise.allSettled([
-        api.getSettings(),    // 0
-        api.getProjects(),    // 1
-        api.getBlogPosts(),   // 2
-        api.getPartners(),    // 3
-        api.getStats(),       // 4
-        api.getBulletins(),   // 5
-        api.getTeam(),        // 6
-        api.getTestimonials() // 7
+        api.getSettings(),
+        api.getProjects(),
+        api.getBlogPosts(),
+        api.getPartners(),
+        api.getTeam(), // Appelle team.php via ton service api
+        api.getTestimonials()
       ]);
 
-      // Extraction sécurisée des données
       if (results[0].status === 'fulfilled') setSettings(results[0].value);
       if (results[1].status === 'fulfilled') setProjects(results[1].value || []);
-      if (results[2].status === 'fulfilled') setBlogPosts(results[2].value || []);
-      if (results[3].status === 'fulfilled') setPartners(results[3].value || []);
-      if (results[4].status === 'fulfilled') setStats(results[4].value);
-      if (results[5].status === 'fulfilled') setBulletins(results[5].value || []);
-      if (results[6].status === 'fulfilled') setTeamMembers(results[6].value || []);
-      if (results[7].status === 'fulfilled') setTestimonials(results[7].value || []);
-
-      // Pré-chargement des images du carousel (les 3 premières)
-      if (results[2].status === 'fulfilled' && results[2].value) {
-        const topImages = results[2].value
-          .slice(0, 3)
-          .map((p: BlogPost) => p.image)
-          .filter((url: string) => !!url);
-        await Promise.all(topImages.map(preloadImage));
+      
+      let posts: BlogPost[] = [];
+      if (results[2].status === 'fulfilled') {
+        posts = results[2].value || [];
+        setBlogPosts(posts);
       }
+      
+      if (results[3].status === 'fulfilled') setPartners(results[3].value || []);
+      
+      // Mise à jour des membres de l'équipe
+      if (results[4].status === 'fulfilled') {
+        setTeamMembers(results[4].value || []);
+      }
+      
+      if (results[5].status === 'fulfilled') setTestimonials(results[5].value || []);
+
+      // Pré-chargement des images critiques
+      const topImages = posts.slice(0, 3).map(p => p.image).filter(i => !!i);
+      await Promise.all(topImages.map(url => preloadImage(url)));
 
     } catch (error) {
-      console.error("Erreur critique lors du chargement des données:", error);
+      console.error("Erreur globale lors du chargement des données", error);
     } finally {
-      // Un petit délai pour garantir que les transitions CSS du Skeleton sont fluides
-      setTimeout(() => setLoading(false), 800);
+      // Le délai de 2s permet d'éviter les flashs visuels si l'API répond trop vite
+      setTimeout(() => setLoading(false), 2000);
     }
-  }, []);
+  };
 
   useEffect(() => {
     loadData();
-  }, [loadData]);
+  }, []);
 
   return (
     <DataContext.Provider value={{
       settings,
       projects,
       blogPosts,
-      bulletins,
       partners,
-      stats,
-      teamMembers,
-      testimonials,
+      teamMembers, // On exporte teamMembers
       loading,
-      refreshData: loadData
+      refreshData: loadData,
+      testimonials
     }}>
       {children}
     </DataContext.Provider>
@@ -103,8 +97,6 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 export const useData = () => {
   const context = useContext(DataContext);
-  if (!context) {
-    throw new Error('useData must be used within a DataProvider');
-  }
+  if (!context) throw new Error('useData must be used within a DataProvider');
   return context;
 };
